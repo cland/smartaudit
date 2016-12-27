@@ -1,0 +1,22 @@
+﻿@model SmartAudit.Models.AuditDefinition
+@{
+    ViewBag.Title = "ShowAuditDefinition";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Audit Definition</h2>
+<a class="btn btn-primary" href="/Definition">Close</a>
+<table>
+    <tr><td>Name</td><td>@Model.Name</td></tr>
+    <tr><td>Status</td><td>@Model.IsActive</td></tr>
+</table>
+<fieldset>
+    <legend>Sections</legend>
+    <a class="btn btn-primary" href="/Definition/NewSection">Add Section</a>
+    <p> No sections yet!</p>
+</fieldset>
+
+<br/>
+<a class="btn btn-primary" href="/Definition/EditAudit/@Model.Id">Edit</a>
+<a class="btn btn-primary" href="/Definition">Close</a>
+

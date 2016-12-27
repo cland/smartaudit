@@ -13,6 +13,9 @@ namespace SmartAudit
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            //custom routes
+            routes.MapMvcAttributeRoutes();
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

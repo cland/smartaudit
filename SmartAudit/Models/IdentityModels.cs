@@ -20,6 +20,10 @@ namespace SmartAudit.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public DbSet<AuditDefinition> AuditDefinitions { get; set; }
+        public DbSet<SectionDefinition> SectionDefinitions { get; set; }
+        public DbSet<QuestionDefinition> QuestionDefinitions { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

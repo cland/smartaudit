@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewBag.Title = "New Section";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>New Section Definition</h2>
+
+<form id="newSection" action="">
+    <div class="form-group">
+        <label>Audit Definition:</label>
+        <div class="tt-container">
+            <input id="audit" name="audit" required data-rule-validAudit="true" type="text" value="" class="form-control" />
+            <input id="auditid" name="auditDefinitionId" type="hidden" value="" required/>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Section Name:</label>
+        <div class="tt-container">
+            <input id="section-name" name="Name" required type="text" value="" class="form-control" />         
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Section Weighting %:</label>
+        <div class="tt-container">
+            <input id="section-weighting" name="Weighting" required type="number" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Section Order:</label>
+        <div class="tt-container">
+            <input id="section-order" name="Order" required type="number" value="1" class="form-control" />            
+        </div>
+    </div>
+    <div class="checkbox">
+        <label>
+            <input id="section-order" name="Order" type="checkbox" checked="checked" value=""/> Make Section Available for use (Active)
+        </label>
+    </div>
+    <button class="btn btn-success">Submit</button>
+    <button type="button" onclick="document.location.href='/Definition'" class="btn btn-danger">Cancel</button>
+</form>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {          
+
+            //get audits
+            var audits = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/definitions?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#audit').typeahead({
+                minLength: 2,
+                highlight: true
+            }, {
+                name: 'audits',
+                display: 'name',
+                source: audits
+            }).on("typeahead:select", function (e, audit) {
+                $("#auditid").prop("value", audit.id);
+               
+            });
+
+            $.validator.addMethod("validAudit", function () {
+                var auditid = $("#auditid").prop("value");
+                return auditid && auditid !== 0;
+            }, "Please select a valid audit definition");
+
+            var formdata = $("#newSection");
+            var validator = $("#newSection").validate({
+                
+                submitHandler: function () {
+                    
+                    $.ajax({
+                        url: "/api/definitions/newsection",
+                        method: "post",
+                        data: formdata.serialize()
+                    })
+                    .done(function () {
+                        toastr.success("New section added successfully recorded")
+                        $("#audit").typeahead("val", "");
+                        $("#auditid").prop("value", "");
+                        validator.resetForm();
+                        formdata.trigger("reset");
+                    })
+                    .fail(function () {
+                        toastr.error("Error ")
+
+                    });
+                    return false;
+                } //end submitHandler
+            });
+        });
+    </script>
+ }
