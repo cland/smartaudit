@@ -17,6 +17,8 @@ namespace SmartAudit.Models
         public int Order { get; set; }
         public bool IsActive { get; set; }
 
-        public virtual ICollection<QuestionDefinition> Sections { get; set; }
+        //Navigational property
+        public int AuditDefinitionId { get; set; }
+        public virtual ICollection<QuestionDefinition> Questions { get; set; }
     }
 }

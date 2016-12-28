@@ -222,6 +222,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Dtos\AuditDefinitionDto.cs" />
+    <Compile Include="Dtos\NewQuestionDto.cs" />
     <Compile Include="Dtos\NewSectionDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -250,6 +251,14 @@
     <Compile Include="Migrations\201612271648479_RemoveStatusInSectionDefinition.Designer.cs">
       <DependentUpon>201612271648479_RemoveStatusInSectionDefinition.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612280550245_ChangeSectionsToQuestionsInSectionDefinition.cs" />
+    <Compile Include="Migrations\201612280550245_ChangeSectionsToQuestionsInSectionDefinition.Designer.cs">
+      <DependentUpon>201612280550245_ChangeSectionsToQuestionsInSectionDefinition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201612280717350_AddParentIdInSectionAndQuestionDefinition.cs" />
+    <Compile Include="Migrations\201612280717350_AddParentIdInSectionAndQuestionDefinition.Designer.cs">
+      <DependentUpon>201612280717350_AddParentIdInSectionAndQuestionDefinition.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AuditDefinition.cs" />
@@ -261,6 +270,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\AuditDefinitionFormViewModel.cs" />
+    <Compile Include="ViewModel\AuditSectionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
@@ -565,6 +575,8 @@
     <Content Include="Views\Definition\Index.cshtml" />
     <Content Include="Views\Definition\ShowAuditDefinition.cshtml" />
     <Content Include="Views\Definition\NewSection.cshtml" />
+    <Content Include="Views\Definition\ShowSection.cshtml" />
+    <Content Include="Views\Definition\QuestionDefinitionForm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -595,6 +607,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612271648479_RemoveStatusInSectionDefinition.resx">
       <DependentUpon>201612271648479_RemoveStatusInSectionDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612280550245_ChangeSectionsToQuestionsInSectionDefinition.resx">
+      <DependentUpon>201612280550245_ChangeSectionsToQuestionsInSectionDefinition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612280717350_AddParentIdInSectionAndQuestionDefinition.resx">
+      <DependentUpon>201612280717350_AddParentIdInSectionAndQuestionDefinition.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

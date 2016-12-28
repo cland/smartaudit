@@ -1,0 +1,75 @@
+﻿@model SmartAudit.ViewModel.AuditSectionViewModel
+@{
+    ViewBag.Title = "ShowAuditDefinition";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var TotalQuestions = Model.Section.Questions.Count();
+} 
+
+<h2>Section Definition</h2>
+<table>
+    <tr><td>Section Name</td><td>@Model.Section.Name</td></tr>
+    <tr><td>Status</td><td>@Model.Section.IsActive</td></tr>
+    <tr><td>Total Questions</td><td>TotalQuestions</td></tr>
+    <tr><td>Audit Name</td><td><a href="/Definition/showaudit/@Model.AuditId">@Model.AuditName</a></td></tr>
+</table>
+<fieldset>
+    <legend>Sections</legend>
+    <a class="btn btn-primary" href="/Definition/NewQuestion?sectionId=@Model.Section.Id">Add Question</a>
+    @if (TotalQuestions < 1)
+    {
+        <p> No questions yet!</p> 
+    }
+    else
+    {
+        <table id="questions" class="table table-bordered table-hover table-responsive">
+            
+            <tbody>
+                @foreach (var que in Model.Section.Questions)
+                {
+                    <tr><td><label>QUESTION # @que.DisplayNumber</label></td><td> @que.QuestionText</td></tr>
+                    <tr><td><label>GUIDELINE</label></td><td> @que.Guideline</td></tr>
+                    <tr>
+                        <td colspan="3">
+                            <table class="table table-responsive table-bordered table-condensed">
+                                <thead>
+                                    <tr><th>Order</th><th>Weighting</th><th>Status</th><th>Actions</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>@que.Order</td>
+                                        <td>@que.Weight</td>
+                                        <td>@(que.IsActive ? "Yes" : "No") </td>
+                                        <td><button class='btn btn-link js-edit' data-audit-id="@que.Id">Edit</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </td>                        
+                    </tr>
+                    
+                }
+            </tbody>
+        </table>
+    }
+    
+    
+</fieldset>
+
+
+
+<br/>
+<a class="btn btn-primary" href="/Definition/EditSection/@Model.Section.Id">Edit</a>
+<a class="btn btn-primary" href="/Definition/ShowAudit/@Model.AuditId">Close</a>
+
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sections").on("click", ".js-edit", function () {
+                var button = $(this);
+                alert("Edit section");
+                //document.location.href = "/Definition/EditSection/" + button.attr("data-audit-id");
+            });
+        });
+    </script>
+    }

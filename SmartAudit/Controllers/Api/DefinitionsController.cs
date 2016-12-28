@@ -78,18 +78,13 @@ namespace SmartAudit.Controllers.Api
             {
                 return BadRequest();
             }
-            auditDefinitionDto.Sections.Add(new SectionDefinition
-            {
-                Name = "Default Section",
-                Weighting = 1,
-                Order = 1,
-                IsActive = true
-            });
+            
             var auditDefinition = Mapper.Map<AuditDefinitionDto, AuditDefinition>(auditDefinitionDto);
             _context.AuditDefinitions.Add(auditDefinition);
             _context.SaveChanges();
 
-            auditDefinitionDto.Id = auditDefinition.Id;
+            
+            auditDefinitionDto.Id = auditDefinition.Id;            
             return Created(new Uri(Request.RequestUri + "/" + auditDefinitionDto.Id), auditDefinitionDto);
         } //
 
@@ -116,7 +111,7 @@ namespace SmartAudit.Controllers.Api
         // DELETE /api/definitions/1
         [HttpDelete]
         [Authorize(Roles = RoleName.CanManageDefinitions)]
-        public void DeleteCustomer(int id)
+        public void DeleteAudit(int id)
         {
             var auditDefinitionInDb = _context.AuditDefinitions.SingleOrDefault(c => c.Id == id);
             if (auditDefinitionInDb == null)
@@ -130,9 +125,20 @@ namespace SmartAudit.Controllers.Api
          * SECTION DEFINITION END POINTS 
          * 
          */
-        // GET
+        // GET /api/definitions/auditsections/1
+        [Route("api/definitions/auditsections/{id}")]
+        public IHttpActionResult GetAuditSectionDefinitions(int id)
+        {
+            var auditDefinition = _context.AuditDefinitions.SingleOrDefault(a => a.Id == id);
 
-        // POST /api/definitions
+            if (auditDefinition == null) return BadRequest("Audit Definition Id '" + id + "' is invalid");
+           
+            var sectionDefinitionDtos = auditDefinition.Sections;
+
+            return Ok(sectionDefinitionDtos);
+        } //
+
+        // POST /api/definitions/newsection
         [HttpPost]
         [Authorize(Roles = RoleName.CanManageDefinitions)]
         [Route ("api/definitions/newsection")]
@@ -146,7 +152,8 @@ namespace SmartAudit.Controllers.Api
                 Name = newSection.Name,
                 Weighting = newSection.Weighting,
                 IsActive = newSection.IsActive,
-                Order = newSection.Order
+                Order = newSection.Order,
+                AuditDefinitionId = auditDefinition.Id
             };
             auditDefinition.Sections.Add(sectionDefinition);
             _context.SaveChanges(); // SectionDefinitions.Add(sectionDefinition);
@@ -158,5 +165,33 @@ namespace SmartAudit.Controllers.Api
          * 
          */
         // GET
+
+        // POST /api/definitions/newquestion
+        [HttpPost]
+        [Authorize(Roles = RoleName.CanManageDefinitions)]
+        [Route("api/definitions/newquestion")]
+        public IHttpActionResult CreateQuestionDefinition(NewQuestionDto newQuestion)
+        {
+            var sectionDefinition = _context.SectionDefinitions.SingleOrDefault(a => a.Id == newQuestion.SectionDefinitionId);
+            if (sectionDefinition == null) return BadRequest("Section Id definition is not valid!");
+
+            var questionDefinition = new QuestionDefinition
+            {
+               DisplayNumber = newQuestion.DisplayNumber,
+               QuestionText = newQuestion.QuestionText,
+               Guideline = newQuestion.Guideline,
+               Weight = newQuestion.Weight,
+               SampleSize = newQuestion.SampleSize,
+               IsZeroTolerance = newQuestion.IsZeroTolerance,
+               ToleranceLimit = newQuestion.ToleranceLimit,
+               IsBonus = newQuestion.IsBonus,
+               IsActive = newQuestion.IsActive,
+               Order = newQuestion.Order,
+               SectionDefinitionId = sectionDefinition.Id
+            };
+            sectionDefinition.Questions.Add(questionDefinition);
+            _context.SaveChanges(); 
+            return Ok();
+        } //
     } //end class
 } //end namespace

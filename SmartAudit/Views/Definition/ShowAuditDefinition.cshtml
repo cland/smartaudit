@@ -2,21 +2,62 @@
 @{
     ViewBag.Title = "ShowAuditDefinition";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var TotalSections = Model.Sections.Count;
 }
 
 <h2>Audit Definition</h2>
-<a class="btn btn-primary" href="/Definition">Close</a>
 <table>
     <tr><td>Name</td><td>@Model.Name</td></tr>
     <tr><td>Status</td><td>@Model.IsActive</td></tr>
+    <tr><td>Total Sections</td><td>@Model.Sections.Count()</td></tr>
 </table>
 <fieldset>
     <legend>Sections</legend>
-    <a class="btn btn-primary" href="/Definition/NewSection">Add Section</a>
-    <p> No sections yet!</p>
+    <a class="btn btn-primary" href="/Definition/NewSection?auditId=@Model.Id">Add Section</a>
+    @if (TotalSections < 1)
+    {
+        <p> No sections yet!</p>
+    }
+    else
+    {
+        <table id="sections" class="table table-bordered table-hover table-responsive">
+            <thead>
+                <tr><th>Order</th><th>Name</th><th>Weighting</th><th>Status</th><th>Total Questions</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var sec in Model.Sections)
+                {
+                    <tr>
+                        <td>@sec.Order</td>
+                        <td><a class="alert-link" href="/Definition/ShowSection/@sec.Id">@sec.Name</a></td>
+                        <td>@sec.Weighting %</td>
+                        <td>@(sec.IsActive ? "Yes" : "No") </td>
+                        <td>@sec.Questions.Count()</td>
+                        <td><button class='btn btn-link js-edit' data-audit-id="@sec.Id">Edit</button></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    
+    
 </fieldset>
+
+
 
 <br/>
 <a class="btn btn-primary" href="/Definition/EditAudit/@Model.Id">Edit</a>
 <a class="btn btn-primary" href="/Definition">Close</a>
 
+@section scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sections").on("click", ".js-edit", function () {
+                var button = $(this);
+                alert("Edit section");
+                //document.location.href = "/Definition/EditSection/" + button.attr("data-audit-id");
+            });
+        });
+    </script>
+    }

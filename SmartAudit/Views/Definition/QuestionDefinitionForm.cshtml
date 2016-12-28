@@ -1,0 +1,145 @@
+﻿@model SmartAudit.ViewModel.AuditSectionViewModel
+@{
+    ViewBag.Title = "QuestionDefinitionForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Question Definition </h2>
+
+<form id="newQuestion" action="">
+    <div class="form-group">
+        <label>Audit Definition:</label> <span>@Model.AuditName</span>
+       
+    </div>
+
+    <div class="form-group">
+        <label>Section Name:</label>
+        <div class="tt-container">
+            <input id="sectionname" name="sectionname" required data-rule-validSection="true" type="text" value="@Model.Section.Name" class="form-control" />
+            <input id="section-id" name="sectionDefinitionId" type="hidden" value="@Model.Section.Id" required />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Display Number:</label>
+        <div class="tt-container">
+            <input id="qnumber" name="DisplayNumber" required type="text" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Question Text:</label>
+        <div class="tt-container">
+            <textarea id="qtext" name="QuestionText" required rows="5" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Guideline:</label>
+        <div class="tt-container">
+            <textarea id="qquideline" name="Guideline" required rows="5" class="form-control"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Weight / Score:</label>
+        <div class="tt-container">
+            <input id="qweight" name="Weight" required type="number" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Sample Size:</label>
+        <div class="tt-container">
+            <input id="qsamplesize" name="SampleSize" required type="number" value="" class="form-control" />
+        </div>
+    </div>
+    <div class="checkbox">
+        <label>
+            <input id="qiszerotolerance" name="IsZeroTolerance" type="checkbox" checked="checked" value="true" /> Non Negotiable / Zero Tolerance
+        </label>
+    </div>
+    <div class="form-group">
+        <label>Tolerance Limit:</label>
+        <div class="tt-container">
+            <input id="qtolerancelimit" name="ToleranceLimit" required type="number" value="1" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Order:</label>
+        <div class="tt-container">
+            <input id="qorder" name="Order" required type="number" value="1" class="form-control" />
+        </div>
+    </div>
+    <div class="checkbox">
+        <label>
+            <input id="qisbonus" name="IsActive" type="checkbox" value="false" /> Make this a bonus question.
+        </label>
+    </div>
+    <div class="checkbox">
+        <label>
+            <input id="qisactive" name="IsActive" type="checkbox" checked="checked" value="true" /> Make Section Available for use (Active)
+        </label>
+    </div>
+    <button class="btn btn-success">Submit</button>
+    <button type="button" onclick="document.location.href='/Definition/showsection/@Model.Section.Id'" class="btn btn-danger">Close</button>
+</form>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+
+            //get sections
+            var mysections = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/definitions/auditsections/@Model.AuditId?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#sectionname').typeahead({
+                minLength: 2,
+                highlight: true
+            }, {
+                name: 'sectionsbox',
+                display: 'name',
+                source: mysections
+            }).on("typeahead:select", function (e, mysection) {
+                $("#section-id").prop("value", mysection.id);
+
+            });
+
+            //validation
+            $.validator.addMethod("validSection", function () {
+                var sectionid = $("#section-id").prop("value");
+                return sectionid && sectionid !== 0;
+            }, "Please select a valid section definition");
+
+            var formdata = $("#newQuestion");
+            var validator = formdata.validate({
+
+                submitHandler: function () {
+
+                    $.ajax({
+                        url: "/api/definitions/newquestion",
+                        method: "post",
+                        data: formdata.serialize()
+                    })
+                    .done(function () {
+                        toastr.success("New question added successfully recorded")
+                       // $("#audit").typeahead("val", "");
+                        $("#qtext").prop("value", "");
+                        $("#qguideline").prop("value", "");
+                        $("#qweight").prop("value", "");
+                        validator.resetForm();
+                        //formdata.trigger("reset");
+                    })
+                    .fail(function () {
+                        toastr.error("Error ")
+
+                    });
+                    return false;
+                } //end submitHandler
+            });
+        });
+    </script>
+}
+

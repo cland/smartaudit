@@ -1,7 +1,9 @@
-﻿
+﻿@model SmartAudit.Models.AuditDefinition
 @{
     ViewBag.Title = "New Section";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+
 }
 
 <h2>New Section Definition</h2>
@@ -10,8 +12,8 @@
     <div class="form-group">
         <label>Audit Definition:</label>
         <div class="tt-container">
-            <input id="audit" name="audit" required data-rule-validAudit="true" type="text" value="" class="form-control" />
-            <input id="auditid" name="auditDefinitionId" type="hidden" value="" required/>
+            <input id="audit" name="audit" required data-rule-validAudit="true" type="text" value="@Model.Name" class="form-control" />
+            <input id="auditid" name="auditDefinitionId" type="hidden" value="@Model.Id" required/>
         </div>
     </div>
 
@@ -35,11 +37,11 @@
     </div>
     <div class="checkbox">
         <label>
-            <input id="section-order" name="Order" type="checkbox" checked="checked" value=""/> Make Section Available for use (Active)
+            <input id="section-isactive" name="IsActive" type="checkbox" checked="checked" value="true"/> Make Section Available for use (Active)
         </label>
     </div>
     <button class="btn btn-success">Submit</button>
-    <button type="button" onclick="document.location.href='/Definition'" class="btn btn-danger">Cancel</button>
+    <button type="button" onclick="document.location.href='/Definition/showaudit/@Model.Id'" class="btn btn-danger">Close</button>
 </form>
 
 @section scripts{
@@ -86,10 +88,11 @@
                     })
                     .done(function () {
                         toastr.success("New section added successfully recorded")
-                        $("#audit").typeahead("val", "");
-                        $("#auditid").prop("value", "");
+                       // $("#audit").typeahead("val", "");
+                        $("#section-name").prop("value", "");
+                        $("#section-weighting").prop("value", "");
                         validator.resetForm();
-                        formdata.trigger("reset");
+                        //formdata.trigger("reset");
                     })
                     .fail(function () {
                         toastr.error("Error ")
