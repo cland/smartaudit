@@ -217,12 +217,16 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Api\AuditsController.cs" />
     <Compile Include="Controllers\Api\DefinitionsController.cs" />
+    <Compile Include="Controllers\AuditController.cs" />
     <Compile Include="Controllers\DefinitionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Dtos\AuditDefinitionSimpleDto.cs" />
     <Compile Include="Dtos\AuditDefinitionDto.cs" />
+    <Compile Include="Dtos\AuditDto.cs" />
+    <Compile Include="Dtos\AuditSimpleDto.cs" />
     <Compile Include="Dtos\QuestionDefinitionDto.cs" />
     <Compile Include="Dtos\SectionDefinitionDto.cs" />
     <Compile Include="Global.asax.cs">
@@ -295,6 +299,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\AuditDefinitionFormViewModel.cs" />
     <Compile Include="ViewModel\AuditSectionViewModel.cs" />
+    <Compile Include="ViewModel\AuditViewModel.cs" />
     <Compile Include="ViewModel\QuestionViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -602,6 +607,9 @@
     <Content Include="Views\Definition\SectionDefinitionForm.cshtml" />
     <Content Include="Views\Definition\ShowSection.cshtml" />
     <Content Include="Views\Definition\QuestionDefinitionForm.cshtml" />
+    <Content Include="Views\Audit\Index.cshtml" />
+    <Content Include="Views\Audit\AuditForm.cshtml" />
+    <Content Include="Views\Audit\ShowAudit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

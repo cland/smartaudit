@@ -23,7 +23,7 @@ namespace SmartAudit.Models
         public DbSet<AuditDefinition> AuditDefinitions { get; set; }
         public DbSet<SectionDefinition> SectionDefinitions { get; set; }
         public DbSet<QuestionDefinition> QuestionDefinitions { get; set; }
-        public DbSet<Audit> Audit { get; set; }
+        public DbSet<Audit> Audits { get; set; }
         public DbSet<QuestionResult> QuestionResults { get; set; }
         public DbSet<Candidate> Candidates { get; set; }
         public DbSet<ActionComment> ActionComments { get; set; }

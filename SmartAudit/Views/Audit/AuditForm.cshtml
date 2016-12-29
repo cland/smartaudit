@@ -1,0 +1,90 @@
+﻿@model SmartAudit.ViewModel.AuditViewModel
+@{
+    ViewBag.Title = "AuditForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var auditid = Model.Audit.Id;
+    var isnew = (auditid > 0 ? false : true);
+    int[] months = Enumerable.Range(1, 12).ToArray();
+    string[] monthnames = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+    int curMonth = (Model.Audit.Month != null ? (int)Model.Audit.Month : DateTime.Today.Month);
+}
+
+<h2>@(isnew ? "New" : "Update") Audit</h2>
+
+<form id="AuditForm" action="">
+    
+    <div class="form-group">
+        @Html.LabelFor(m => m.Audit.AuditDefinitionId)
+        @Html.DropDownListFor(m => m.Audit.AuditDefinitionId, new SelectList(Model.AuditDefinitions, "Id", "Name"), "Select Audit Definition", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Audit.AuditDefinitionId)
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Audit.PeriodTypeId)
+        @Html.DropDownListFor(m => m.Audit.PeriodTypeId, new SelectList(Model.PeriodTypes, "Id", "Name"), "Select Period Type", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Audit.PeriodTypeId)
+    </div>
+    <div class="form-group">
+        <label>Year:</label>
+        <div class="tt-container">
+            <input id="year" name="Year" required type="number" value="@Model.Audit.Year" class="form-control" />
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Audit.Month)
+        <div class="tt-container">
+            @Html.DropDownListFor(x => x.Audit.Month, months.Select(x =>
+                new SelectListItem
+                {
+                    Text = monthnames[x - 1],
+                    Value = x.ToString(),
+                    Selected = (x == curMonth)
+                }
+            ))
+            </div>
+      </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Audit.QuarterId)
+        @Html.DropDownListFor(m => m.Audit.QuarterId, new SelectList(Model.Quarters, "Id", "Name"), "Select Quarter", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Audit.QuarterId)
+    </div>
+
+    <div class="form-group">
+        <label>Candidate:</label>
+        <div class="tt-container">
+            <input id="candidate" name="Candidate" required type="text" value="@Model.Audit.Candidate" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Audit.DateOfInspection)
+        @Html.TextBoxFor(m => m.Audit.DateOfInspection, "{0:d MMM yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Audit.DateOfInspection)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Audit.DateInspectionCompleted)
+        @Html.TextBoxFor(m => m.Audit.DateInspectionCompleted, "{0:d MMM yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Audit.DateInspectionCompleted)
+    </div>
+    <div class="form-group">
+        <label>Status:</label>
+        <div class="tt-container">
+            <input id="auditstatus" name="AuditStatus" required type="text" value="@Model.Audit.AuditStatus" class="form-control" />
+        </div>
+    </div>
+    
+    <button class="btn btn-success">Submit</button>
+    <button type="button" onclick="document.location.href='/Audit'" class="btn btn-danger">Close</button>
+</form>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+
+        });
+    </script>    
+}
+
