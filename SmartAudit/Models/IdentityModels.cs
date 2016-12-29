@@ -23,6 +23,14 @@ namespace SmartAudit.Models
         public DbSet<AuditDefinition> AuditDefinitions { get; set; }
         public DbSet<SectionDefinition> SectionDefinitions { get; set; }
         public DbSet<QuestionDefinition> QuestionDefinitions { get; set; }
+        public DbSet<Audit> Audit { get; set; }
+        public DbSet<QuestionResult> QuestionResults { get; set; }
+        public DbSet<Candidate> Candidates { get; set; }
+        public DbSet<ActionComment> ActionComments { get; set; }
+        public DbSet<AuditStatus> AuditStates { get; set; }
+        public DbSet<PeriodType> PeriodTypes { get; set; }
+        public DbSet<Quarter> Quarters { get; set; }
+
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

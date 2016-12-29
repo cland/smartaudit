@@ -1,12 +1,14 @@
-﻿@model SmartAudit.ViewModel.AuditSectionViewModel
+﻿@model SmartAudit.ViewModel.QuestionViewModel
 @{
     ViewBag.Title = "QuestionDefinitionForm";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var qid = Model.Question.Id;
+    var isnew = (qid > 0 ? false : true);
 }
 
-<h2>Question Definition </h2>
+<h2>@(isnew ? "New" : "Update") Question Definition </h2>
 
-<form id="newQuestion" action="">
+<form id="QuestionForm" action="">
     <div class="form-group">
         <label>Audit Definition:</label> <span>@Model.AuditName</span>
        
@@ -22,60 +24,60 @@
     <div class="form-group">
         <label>Display Number:</label>
         <div class="tt-container">
-            <input id="qnumber" name="DisplayNumber" required type="text" value="" class="form-control" />
+            <input id="qnumber" name="DisplayNumber" required type="text" value="@Model.Question.DisplayNumber" class="form-control reset-input" />
         </div>
     </div>
     <div class="form-group">
         <label>Question Text:</label>
         <div class="tt-container">
-            <textarea id="qtext" name="QuestionText" required rows="5" class="form-control"></textarea>
+            <textarea id="qtext" name="QuestionText" required rows="5" class="form-control reset-textarea">@Model.Question.QuestionText</textarea>
         </div>
     </div>
     <div class="form-group">
         <label>Guideline:</label>
         <div class="tt-container">
-            <textarea id="qquideline" name="Guideline" required rows="5" class="form-control"></textarea>
+            <textarea id="qquideline" name="Guideline" required rows="5" class="form-control reset-textarea">@Model.Question.Guideline</textarea>
         </div>
     </div>
     <div class="form-group">
         <label>Weight / Score:</label>
         <div class="tt-container">
-            <input id="qweight" name="Weight" required type="number" value="" class="form-control" />
+            <input id="qweight" name="Weight" required type="number" value="@Model.Question.Weight" class="form-control reset-input" />
         </div>
     </div>
     <div class="form-group">
         <label>Sample Size:</label>
         <div class="tt-container">
-            <input id="qsamplesize" name="SampleSize" required type="number" value="" class="form-control" />
+            <input id="qsamplesize" name="SampleSize" required type="number" value="@Model.Question.SampleSize" class="form-control reset-input" />
         </div>
     </div>
     <div class="checkbox">
         <label>
-            <input id="qiszerotolerance" name="IsZeroTolerance" type="checkbox" checked="checked" value="true" /> Non Negotiable / Zero Tolerance
+            <input id="qiszerotolerance" name="IsZeroTolerance" type="checkbox" @(@Model.Question.IsZeroTolerance ? "checked='checked'" : "") value="true" class="reset-checkbox" /> Non Negotiable / Zero Tolerance
         </label>
     </div>
     <div class="form-group">
         <label>Tolerance Limit:</label>
         <div class="tt-container">
-            <input id="qtolerancelimit" name="ToleranceLimit" required type="number" value="1" class="form-control" />
+            <input id="qtolerancelimit" name="ToleranceLimit" required type="number" value="@Model.Question.ToleranceLimit" class="form-control reset-input" />
         </div>
     </div>
     <div class="form-group">
         <label>Order:</label>
         <div class="tt-container">
-            <input id="qorder" name="Order" required type="number" value="1" class="form-control" />
+            <input id="qorder" name="Rank" required type="number" value="@Model.Question.Rank" class="form-control reset-input" />
         </div>
     </div>
     <div class="checkbox">
         <label>
-            <input id="qisbonus" name="IsActive" type="checkbox" value="false" /> Make this a bonus question.
+            <input id="qisbonus" name="IsActive" type="checkbox" @(@Model.Question.IsBonus ? "checked='checked'" : "") value="false" class="reset-checkbox" /> Make this a bonus question.
         </label>
     </div>
     <div class="checkbox">
         <label>
-            <input id="qisactive" name="IsActive" type="checkbox" checked="checked" value="true" /> Make Section Available for use (Active)
+            <input id="qisactive" name="IsActive" type="checkbox" @(@Model.Question.IsActive ? "checked='checked'" : "") value="true" class="reset-checkbox"/> Make Section Available for use (Active)
         </label>
-    </div>
+    </div>    
     <button class="btn btn-success">Submit</button>
     <button type="button" onclick="document.location.href='/Definition/showsection/@Model.Section.Id'" class="btn btn-danger">Close</button>
 </form>
@@ -90,7 +92,7 @@
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 remote: {
-                    url: '/api/definitions/auditsections/@Model.AuditId?query=%QUERY',
+                    url: '/api/definitions/auditsections/@Model.Section.AuditDefinitionId?query=%QUERY',
                     wildcard: '%QUERY'
                 }
             });
@@ -113,22 +115,30 @@
                 return sectionid && sectionid !== 0;
             }, "Please select a valid section definition");
 
-            var formdata = $("#newQuestion");
+            var formdata = $("#QuestionForm");
             var validator = formdata.validate({
 
                 submitHandler: function () {
-
+                    var _url = "/api/definitions/newquestion";
+                    var _method = "POST";
+                    if(@qid > 0){
+                        _url = "/api/definitions/updatequestion/" + @qid;
+                        _method = "PUT";
+                    }
                     $.ajax({
-                        url: "/api/definitions/newquestion",
-                        method: "post",
+                        url: _url,
+                        method: _method,
                         data: formdata.serialize()
                     })
                     .done(function () {
-                        toastr.success("New question added successfully recorded")
-                       // $("#audit").typeahead("val", "");
-                        $("#qtext").prop("value", "");
-                        $("#qguideline").prop("value", "");
-                        $("#qweight").prop("value", "");
+                        toastr.success("Question recorded successfully!")
+                        // $("#audit").typeahead("val", "");
+
+                        if( @qid < 1 ){
+                            $(".reset-checkbox").prop("checked",false);
+                            $(".reset-input").prop("value","");
+                            $(".reset-textarea").val("");
+                        }                        
                         validator.resetForm();
                         //formdata.trigger("reset");
                     })

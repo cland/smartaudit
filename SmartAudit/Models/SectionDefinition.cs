@@ -14,7 +14,7 @@ namespace SmartAudit.Models
         public string Name { get; set; }
         [Required]
         public double Weighting { get; set; }
-        public int Order { get; set; }
+        public int Rank { get; set; }
         public bool IsActive { get; set; }
 
         //Navigational property

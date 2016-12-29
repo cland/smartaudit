@@ -7,7 +7,7 @@ using System.Web;
 
 namespace SmartAudit.Dtos
 {
-    public class AuditDefinitionDto
+    public class AuditDefinitionSimpleDto
     {
         public int Id { get; set; }
         [Required]
@@ -15,7 +15,7 @@ namespace SmartAudit.Dtos
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
-        public virtual ICollection<SectionDefinition> Sections { get; set; }
+        //public virtual ICollection<SectionDefinition> Sections { get; set; }
         
     }
 }

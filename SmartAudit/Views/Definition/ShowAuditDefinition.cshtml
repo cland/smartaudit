@@ -28,12 +28,12 @@
                 @foreach (var sec in Model.Sections)
                 {
                     <tr>
-                        <td>@sec.Order</td>
+                        <td>@sec.Rank</td>
                         <td><a class="alert-link" href="/Definition/ShowSection/@sec.Id">@sec.Name</a></td>
                         <td>@sec.Weighting %</td>
                         <td>@(sec.IsActive ? "Yes" : "No") </td>
                         <td>@sec.Questions.Count()</td>
-                        <td><button class='btn btn-link js-edit' data-audit-id="@sec.Id">Edit</button></td>
+                        <td><button class='btn btn-link js-edit' data-section-id="@sec.Id">Edit</button></td>
                     </tr>
                 }
             </tbody>
@@ -55,8 +55,7 @@
         $(document).ready(function () {
             $("#sections").on("click", ".js-edit", function () {
                 var button = $(this);
-                alert("Edit section");
-                //document.location.href = "/Definition/EditSection/" + button.attr("data-audit-id");
+                document.location.href = "/Definition/EditSection/" + button.attr("data-section-id");
             });
         });
     </script>

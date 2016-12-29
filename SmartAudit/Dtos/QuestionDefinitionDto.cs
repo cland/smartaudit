@@ -6,7 +6,7 @@ using System.Web;
 
 namespace SmartAudit.Dtos
 {
-    public class NewQuestionDto
+    public class QuestionDefinitionDto
     {
         public int SectionDefinitionId { get; set; }
         public int Id { get; set; }
@@ -32,6 +32,6 @@ namespace SmartAudit.Dtos
         public int ToleranceLimit { get; set; }
         public bool IsBonus { get; set; }
         public bool IsActive { get; set; }
-        public int Order { get; set; }
+        public int Rank { get; set; }
     } //end class
 } //end namespace

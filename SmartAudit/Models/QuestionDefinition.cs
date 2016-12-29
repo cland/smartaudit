@@ -32,7 +32,7 @@ namespace SmartAudit.Models
         public int ToleranceLimit { get; set; }
         public bool IsBonus { get; set; }
         public bool IsActive { get; set; }
-        public int Order { get; set; }
+        public int Rank { get; set; }
 
         //Navigational
         public int SectionDefinitionId { get; set; }

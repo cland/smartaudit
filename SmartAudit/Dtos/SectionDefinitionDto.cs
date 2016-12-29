@@ -6,7 +6,7 @@ using System.Web;
 
 namespace SmartAudit.Dtos
 {
-    public class NewSectionDto
+    public class SectionDefinitionDto
     {
         public int AuditDefinitionId { get; set; }
         public int Id { get; set; }
@@ -16,7 +16,7 @@ namespace SmartAudit.Dtos
         [Required]
         public double Weighting { get; set; }
         public string Status { get; set; }
-        public int Order { get; set; }
+        public int Rank { get; set; }
         public bool IsActive { get; set; }
     }//end class
 } //end namespace

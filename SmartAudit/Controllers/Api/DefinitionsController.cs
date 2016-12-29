@@ -25,13 +25,20 @@ namespace SmartAudit.Controllers.Api
             {
                 // Domain to Dto
                 cfg.CreateMap<AuditDefinition, AuditDefinitionDto>();
+                cfg.CreateMap<AuditDefinition, AuditDefinitionSimpleDto>();
+                cfg.CreateMap<SectionDefinition, SectionDefinitionDto>();
+                cfg.CreateMap<QuestionDefinition, QuestionDefinitionDto>();
 
                 // Dto to Domain
-                
+
                 cfg.CreateMap< AuditDefinitionDto, AuditDefinition>()
                 .ForMember(c => c.Id, opt => opt.Ignore());
-                
-                
+                cfg.CreateMap<SectionDefinitionDto, SectionDefinition>()
+                .ForMember(c => c.Id, opt => opt.Ignore());
+                cfg.CreateMap<QuestionDefinitionDto, QuestionDefinition>()
+                .ForMember(c => c.Id, opt => opt.Ignore());
+
+
             });
 
 
@@ -55,7 +62,7 @@ namespace SmartAudit.Controllers.Api
             }            
             var auditDefinitionDtos = _context.AuditDefinitions
                 .ToList()
-                .Select(mapper.Map<AuditDefinition, AuditDefinitionDto>);
+                .Select(mapper.Map<AuditDefinition, AuditDefinitionSimpleDto>);
 
             return Ok(auditDefinitionDtos);
         } //
@@ -79,7 +86,7 @@ namespace SmartAudit.Controllers.Api
                 return BadRequest();
             }
             
-            var auditDefinition = Mapper.Map<AuditDefinitionDto, AuditDefinition>(auditDefinitionDto);
+            var auditDefinition = mapper.Map<AuditDefinitionDto, AuditDefinition>(auditDefinitionDto);
             _context.AuditDefinitions.Add(auditDefinition);
             _context.SaveChanges();
 
@@ -103,7 +110,7 @@ namespace SmartAudit.Controllers.Api
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
 
-            Mapper.Map(auditDefinitionDto, auditDefinitionInDb);
+            mapper.Map(auditDefinitionDto, auditDefinitionInDb);
 
             _context.SaveChanges();
         } //
@@ -142,7 +149,7 @@ namespace SmartAudit.Controllers.Api
         [HttpPost]
         [Authorize(Roles = RoleName.CanManageDefinitions)]
         [Route ("api/definitions/newsection")]
-        public IHttpActionResult CreateSectionDefinition(NewSectionDto newSection)
+        public IHttpActionResult CreateSectionDefinition(SectionDefinitionDto newSection)
         {
             var auditDefinition = _context.AuditDefinitions.SingleOrDefault(a => a.Id == newSection.AuditDefinitionId);
             if (auditDefinition == null) return BadRequest("Audit Id definition is not valid!");
@@ -152,7 +159,7 @@ namespace SmartAudit.Controllers.Api
                 Name = newSection.Name,
                 Weighting = newSection.Weighting,
                 IsActive = newSection.IsActive,
-                Order = newSection.Order,
+                Rank = newSection.Rank,
                 AuditDefinitionId = auditDefinition.Id
             };
             auditDefinition.Sections.Add(sectionDefinition);
@@ -160,17 +167,45 @@ namespace SmartAudit.Controllers.Api
             return Ok();
         } //
 
+        // PUT /api/definitions/updatequestion/1
+        [HttpPut]
+        [Authorize(Roles = RoleName.CanManageDefinitions)]
+        [Route("api/definitions/updatesection/{id}")]
+        public void UpdateSection(int id, SectionDefinitionDto sectionDefinitionDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+
+            var sectionInDb = _context.SectionDefinitions.SingleOrDefault(c => c.Id == id);
+            if (sectionInDb == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
+
+            mapper.Map(sectionDefinitionDto, sectionInDb);
+
+            _context.SaveChanges();
+        }
+
         /*
          * QUESTION DEFINITION END POINTS 
          * 
          */
-        // GET
+        // GET /api/definitions/1
+        [Route("api/definitions/question/{id}")]
+        public IHttpActionResult GetQuestionDefinition(int id)
+        {
+            var questionDefinition = _context.QuestionDefinitions.SingleOrDefault(a => a.Id == id);
+            if (questionDefinition == null) return NotFound();
 
+            return Ok(mapper.Map<QuestionDefinition, QuestionDefinitionDto>(questionDefinition));
+        } //
         // POST /api/definitions/newquestion
         [HttpPost]
         [Authorize(Roles = RoleName.CanManageDefinitions)]
         [Route("api/definitions/newquestion")]
-        public IHttpActionResult CreateQuestionDefinition(NewQuestionDto newQuestion)
+        public IHttpActionResult CreateQuestionDefinition(QuestionDefinitionDto newQuestion)
         {
             var sectionDefinition = _context.SectionDefinitions.SingleOrDefault(a => a.Id == newQuestion.SectionDefinitionId);
             if (sectionDefinition == null) return BadRequest("Section Id definition is not valid!");
@@ -186,12 +221,33 @@ namespace SmartAudit.Controllers.Api
                ToleranceLimit = newQuestion.ToleranceLimit,
                IsBonus = newQuestion.IsBonus,
                IsActive = newQuestion.IsActive,
-               Order = newQuestion.Order,
+               Rank = newQuestion.Rank,
                SectionDefinitionId = sectionDefinition.Id
             };
             sectionDefinition.Questions.Add(questionDefinition);
             _context.SaveChanges(); 
             return Ok();
         } //
+
+        // PUT /api/definitions/updatequestion/1
+        [HttpPut]
+        [Authorize(Roles = RoleName.CanManageDefinitions)]
+        [Route("api/definitions/updatequestion/{id}")]
+        public void UpdateQuestion(int id, QuestionDefinitionDto questionDefinitionDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            }
+
+            var questionInDb = _context.QuestionDefinitions.SingleOrDefault(c => c.Id == id);
+            if (questionInDb == null)
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+
+
+            mapper.Map(questionDefinitionDto, questionInDb);
+
+            _context.SaveChanges();
+        }
     } //end class
 } //end namespace

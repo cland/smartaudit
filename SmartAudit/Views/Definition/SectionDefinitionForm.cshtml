@@ -1,53 +1,54 @@
-﻿@model SmartAudit.Models.AuditDefinition
+﻿@model SmartAudit.ViewModel.AuditSectionViewModel
 @{
     ViewBag.Title = "New Section";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
+    var sectionid = Model.Section.Id;
+    var isnew = (sectionid > 0 ? false : true);
 
 }
 
-<h2>New Section Definition</h2>
+<h2>@(isnew ? "New" : "Update") Section Definition</h2>
 
 <form id="newSection" action="">
     <div class="form-group">
         <label>Audit Definition:</label>
         <div class="tt-container">
-            <input id="audit" name="audit" required data-rule-validAudit="true" type="text" value="@Model.Name" class="form-control" />
-            <input id="auditid" name="auditDefinitionId" type="hidden" value="@Model.Id" required/>
+            <input id="audit" name="audit" required data-rule-validAudit="true" type="text" value="@Model.AuditName" class="form-control" />
+            <input id="auditid" name="auditDefinitionId" type="hidden" value="@Model.AuditId" required/>
         </div>
     </div>
 
     <div class="form-group">
         <label>Section Name:</label>
         <div class="tt-container">
-            <input id="section-name" name="Name" required type="text" value="" class="form-control" />         
+            <input id="section-name" name="Name" required type="text" value="@Model.Section.Name" class="form-control" />         
         </div>
     </div>
     <div class="form-group">
         <label>Section Weighting %:</label>
         <div class="tt-container">
-            <input id="section-weighting" name="Weighting" required type="number" value="" class="form-control" />
+            <input id="section-weighting" name="Weighting" required type="number" value="@Model.Section.Weighting" class="form-control" />
         </div>
     </div>
     <div class="form-group">
         <label>Section Order:</label>
         <div class="tt-container">
-            <input id="section-order" name="Order" required type="number" value="1" class="form-control" />            
+            <input id="section-order" name="Rank" required type="number" value="@Model.Section.Rank" class="form-control" />            
         </div>
     </div>
     <div class="checkbox">
         <label>
-            <input id="section-isactive" name="IsActive" type="checkbox" checked="checked" value="true"/> Make Section Available for use (Active)
+            <input id="section-isactive" name="IsActive" type="checkbox" @(@Model.Section.IsActive ? "checked='checked'" : "") value="true"/> Make Section Available for use (Active)
         </label>
     </div>
     <button class="btn btn-success">Submit</button>
-    <button type="button" onclick="document.location.href='/Definition/showaudit/@Model.Id'" class="btn btn-danger">Close</button>
+    <button type="button" onclick="document.location.href='/Definition/showaudit/@Model.AuditId'" class="btn btn-danger">Close</button>
 </form>
 
 @section scripts{
     @Scripts.Render("~/bundles/jqueryval")
     <script>
-        $(document).ready(function () {          
+        $(document).ready(function () {
 
             //get audits
             var audits = new Bloodhound({
@@ -68,7 +69,7 @@
                 source: audits
             }).on("typeahead:select", function (e, audit) {
                 $("#auditid").prop("value", audit.id);
-               
+
             });
 
             $.validator.addMethod("validAudit", function () {
@@ -78,19 +79,26 @@
 
             var formdata = $("#newSection");
             var validator = $("#newSection").validate({
-                
+
                 submitHandler: function () {
-                    
+                    var _url = "/api/definitions/newsection";
+                    var _method = "POST";
+                    if(@sectionid > 0){
+                        _url = "/api/definitions/updatesection/" + @sectionid;
+                        _method = "PUT";
+                    }
                     $.ajax({
-                        url: "/api/definitions/newsection",
-                        method: "post",
+                        url: _url,
+                        method: _method,
                         data: formdata.serialize()
                     })
                     .done(function () {
-                        toastr.success("New section added successfully recorded")
-                       // $("#audit").typeahead("val", "");
-                        $("#section-name").prop("value", "");
-                        $("#section-weighting").prop("value", "");
+                        toastr.success("Section recorded successfully!")
+                        // $("#audit").typeahead("val", "");
+                        if( @sectionid < 1 ){
+                            $("#section-name").prop("value", "");
+                            $("#section-weighting").prop("value", "");
+                        }
                         validator.resetForm();
                         //formdata.trigger("reset");
                     })

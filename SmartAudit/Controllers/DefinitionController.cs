@@ -18,7 +18,8 @@ namespace SmartAudit.Controllers
         private static string _AuditDefinitionForm = "AuditDefinitionForm";
         private static string _ShowAuditDefinition = "ShowAuditDefinition";
         private static string _ShowSection = "ShowSection";
-        private static string _QuestionDefintionForm = "QuestionDefinitionForm";
+        private static string _QuestionDefinitionForm = "QuestionDefinitionForm";
+        private static string _SectionDefinitionForm = "SectionDefinitionForm";
        // private static string _SectionDefinitionForm = "SectionDefinitionForm";
        // private static string _QuestionDefinitionForm = "QuestionDefinitionForm";
 
@@ -107,10 +108,31 @@ namespace SmartAudit.Controllers
         {
             var auditDefinition = _context.AuditDefinitions.SingleOrDefault(a => a.Id == auditId);
             if (auditDefinition == null) return View(new AuditDefinition());
-            //front end to use api
-            return View(auditDefinition);
-        }
 
+            var viewModel = new AuditSectionViewModel
+            {
+                AuditId = auditDefinition.Id,
+                AuditName = auditDefinition.Name,
+                Section = new SectionDefinition()
+            };
+            
+            return View(_SectionDefinitionForm,viewModel);
+        }
+        [Authorize(Roles = RoleName.CanManageDefinitions)]
+        public ActionResult EditSection(int id)
+        {
+            var sectionDefinition = _context.SectionDefinitions.SingleOrDefault(a => a.Id == id);
+            if (sectionDefinition == null) return HttpNotFound("Invalid question id '" + id + "'");
+
+            var auditDefinition = _context.AuditDefinitions.SingleOrDefault(s => s.Id == sectionDefinition.AuditDefinitionId);
+            var viewModel = new AuditSectionViewModel
+            {
+                AuditId = auditDefinition.Id,
+                AuditName = auditDefinition.Name,
+                Section = sectionDefinition
+            };
+            return View(_SectionDefinitionForm, viewModel);
+        } //
         public ActionResult ShowSection(int id)
         {
             var sectionDefinition = _context.SectionDefinitions
@@ -139,14 +161,31 @@ namespace SmartAudit.Controllers
             if (sectionDefinition == null) return View(new AuditDefinition());
 
             var auditDefinition = _context.AuditDefinitions.SingleOrDefault(a => a.Id == sectionDefinition.AuditDefinitionId);
-            var viewModel = new AuditSectionViewModel
+            var viewModel = new QuestionViewModel
             {
-                AuditId = auditDefinition.Id,
                 AuditName = auditDefinition.Name,
-                Section = sectionDefinition
+                Section = sectionDefinition,
+                Question = new QuestionDefinition()
             };
-            
-            return View(_QuestionDefintionForm, viewModel);
-        }
+
+            return View(_QuestionDefinitionForm, viewModel);
+        } //
+
+        [Authorize(Roles = RoleName.CanManageDefinitions)]
+        public ActionResult EditQuestion(int id)
+        {
+            var questionDefinition = _context.QuestionDefinitions.SingleOrDefault(a => a.Id == id);
+            if (questionDefinition == null) return HttpNotFound("Invalid question id '" + id + "'");
+
+            var sectionDefinition = _context.SectionDefinitions.SingleOrDefault(s => s.Id == questionDefinition.SectionDefinitionId);
+            var auditDefinition = _context.AuditDefinitions.SingleOrDefault(s => s.Id == sectionDefinition.AuditDefinitionId);
+            var viewModel = new QuestionViewModel
+            {                
+                AuditName = auditDefinition.Name,
+                Section = sectionDefinition,
+                Question = questionDefinition
+            };
+            return View(_QuestionDefinitionForm, viewModel);
+        } //
     } // end class
 } //end namespace
