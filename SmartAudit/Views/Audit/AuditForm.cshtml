@@ -7,84 +7,222 @@
     int[] months = Enumerable.Range(1, 12).ToArray();
     string[] monthnames = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
     int curMonth = (Model.Audit.Month != null ? (int)Model.Audit.Month : DateTime.Today.Month);
+    var candidate = Model.Audit.Candidate;
 }
 
-<h2>@(isnew ? "New" : "Update") Audit</h2>
+<h2>@(isnew ? "New" : "Update") Audit @Model.AuditDefinition.Id</h2>
 
 <form id="AuditForm" action="">
-    
-    <div class="form-group">
-        @Html.LabelFor(m => m.Audit.AuditDefinitionId)
-        @Html.DropDownListFor(m => m.Audit.AuditDefinitionId, new SelectList(Model.AuditDefinitions, "Id", "Name"), "Select Audit Definition", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Audit.AuditDefinitionId)
-    </div>
-
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Audit.PeriodTypeId)
-        @Html.DropDownListFor(m => m.Audit.PeriodTypeId, new SelectList(Model.PeriodTypes, "Id", "Name"), "Select Period Type", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Audit.PeriodTypeId)
+        <label>Audit Definition:</label>
+        <div class="tt-container">
+            <input id="audit" name="audit" required data-rule-validAudit="true" type="text" value="@Model.AuditDefinition.Name" class="form-control" />
+            <input id="auditid" name="auditDefinitionId" type="hidden" value="@Model.AuditDefinition.Id" required />
+        </div>
     </div>
+
+    <div class="form-group">
+        <label>Period Type</label>
+        <div class="tt-container">
+            <select id="periodTypeId" name="PeriodTypeId" class="form-control" required>
+                <option value="">Select One</option>
+                @foreach (var item in Model.PeriodTypes)
+            {
+                    <option value="@item.Id" @(item == Model.Audit.PeriodType ? "Selected='True'" : "")>@item.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+
     <div class="form-group">
         <label>Year:</label>
         <div class="tt-container">
             <input id="year" name="Year" required type="number" value="@Model.Audit.Year" class="form-control" />
         </div>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Audit.Month)
-        <div class="tt-container">
-            @Html.DropDownListFor(x => x.Audit.Month, months.Select(x =>
-                new SelectListItem
-                {
-                    Text = monthnames[x - 1],
-                    Value = x.ToString(),
-                    Selected = (x == curMonth)
-                }
-            ))
-            </div>
-      </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Audit.QuarterId)
-        @Html.DropDownListFor(m => m.Audit.QuarterId, new SelectList(Model.Quarters, "Id", "Name"), "Select Quarter", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Audit.QuarterId)
+        <label>Month:</label>
+        <div class="tt-container">
+            <select id="month" name="Month" class="form-control" required>
+                <option value="">Select One</option>
+                @foreach (var item in months)
+                {
+                    <option value="@item" @(item == curMonth ? "Selected='True'" : "")>@monthnames[item - 1]</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Quarter</label>
+        <div class="tt-container">
+            <select id="quarterId" name="QuarterId" class="form-control" required>
+                <option value="">Select One</option>
+                @foreach (var item in Model.Quarters)
+            {
+                    <option value="@item.Id" @(item == Model.Audit.Quarter ? "Selected='True'" : "")>@item.Name</option>
+                }
+            </select>
+        </div>
     </div>
 
     <div class="form-group">
         <label>Candidate:</label>
         <div class="tt-container">
-            <input id="candidate" name="Candidate" required type="text" value="@Model.Audit.Candidate" class="form-control" />
+            <input id="candidate" name="CandidateName" required data-rule-validCandidate="true" type="text" value="@Model.Audit.Candidate" class="form-control" />
+            <input id="candidateid" name="CandidateId" required type="hidden" value="@(candidate != null?candidate.Id : 0)" />
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Audit.DateOfInspection)
-        @Html.TextBoxFor(m => m.Audit.DateOfInspection, "{0:d MMM yyyy}", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Audit.DateOfInspection)
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Audit.DateInspectionCompleted)
-        @Html.TextBoxFor(m => m.Audit.DateInspectionCompleted, "{0:d MMM yyyy}", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Audit.DateInspectionCompleted)
-    </div>
-    <div class="form-group">
-        <label>Status:</label>
+        <label>Inspection Date</label>
         <div class="tt-container">
-            <input id="auditstatus" name="AuditStatus" required type="text" value="@Model.Audit.AuditStatus" class="form-control" />
+            <input id="dateOfInspection" name="DateOfInspection" required value="@Model.Audit.DateOfInspection" type="text" class="form-control" />
         </div>
     </div>
-    
-    <button class="btn btn-success">Submit</button>
+    <div class="form-group">
+        <label>Completion Date</label>
+        <div class="tt-container">
+            <input id="dateOfCompletion" name="DateInspectionCompleted" value="@Model.Audit.DateInspectionCompleted" type="text" class="form-control" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Status</label>
+        <div class="tt-container">
+            <select id="auditStatusId" name="AuditStatusId" class="form-control" required>
+                <option value="">Select One</option>
+                @foreach (var item in Model.AuditStates)
+                {
+                    <option value="@item.Id" @(item == Model.Audit.AuditStatus || item.Id == 1 ? "Selected='True'" : "")>@item.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+    <button class="btn btn-success">Save Audit Details</button>
     <button type="button" onclick="document.location.href='/Audit'" class="btn btn-danger">Close</button>
 </form>
+@if (!isnew)
+{
+    <h2>Sections And Questions</h2>
+    <form id="MainAudit" name="MainAudit">
+
+
+        @foreach (var sec in Model.AuditDefinition.Sections.Where(s => s.IsActive == true))
+        {
+            var questionResults = Model.QuestionResults.Where(q => q.QuestionDefinition.SectionDefinitionId == sec.Id);
+            <div id="@sec.Id" class="section-container">
+                <div id="section-header-@sec.Id" class="section-header">
+                    @sec.Name  | Section-Score | <button name="Save-Audit" class="btn btn-success">Save Section</button>
+                </div>
+                <div id="section-questions-@sec.Id" class="section-questions">
+                    @foreach (var que in questionResults)
+                    {
+                        bool isNewQ = (que.Id == 0 ? true : false);
+                        var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
+                        var thisScore = (isNewQ ? "--" : que.Score.ToString());
+
+                        <table id="table-@jqueryId" class="table table-condensed table-bordered">
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="Id" id="question-id-@jqueryId" value="@que.Id" />
+                                    <span class="question-displayNumber">@que.QuestionDefinition.DisplayNumber</span>
+                                    <span class="question-text">@que.QuestionDefinition.QuestionText</span>
+                                </td>
+                                <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
+                                <td>Yes/No | N/A | Score  @thisScore</td>
+                            </tr>
+                            <tr>
+                                <td>Guidelines: <span class="question-quideline">@que.QuestionDefinition.Guideline</span></td>
+                                <td><label>Sample Size:</label><span class="question-samplesize">@que.QuestionDefinition.SampleSize</span></td>
+                                <td>
+                                    <label>Complied:</label>
+                                    <div class="question-sampleactual">
+                                        <input type="number" id="question-sampleactual-@jqueryId" name="SampleActual" class="form-control question-sampleactual" value="@que.SampleActual" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    }
+                </div>
+                <div id="section-footer-@sec.Id" class="section-footer">
+
+                </div>
+            </div>
+        }
+
+    </form>
+}
+
 
 @section scripts{
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(document).ready(function () {
 
+            //candidates
+            var candidates = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/candidates?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#candidate').typeahead({
+                minLength: 2,
+                highlight: true
+            }, {
+                name: 'candidates',
+                display: 'name',
+                source: candidates
+            }).on("typeahead:select", function (e, candidate) {
+                $("#candidateid").prop("value", candidate.id);
+            });
+
+            //validation
+            $.validator.addMethod("validCandidate", function () {
+                var candidateid = $("#candidateid").prop("value");
+                return candidateid && candidateid !== 0;
+            }, "Please select a valid candidate");
+
+            var formdata = $("#AuditForm");
+            var validator = $("#AuditForm").validate({
+
+                submitHandler: function () {
+                    var _url = "/api/audits";
+                    var _method = "POST";
+                    if(@auditid > 0){
+                        _url = "/api/audits/" + @auditid;
+                        _method = "PUT";
+                    }
+                    console.log("Submitting form..." + _method);
+                    $.ajax({
+                        url: _url,
+                        method: _method,
+                        data: formdata.serialize()
+                    })
+                    .done(function () {
+                        toastr.success("Audit recorded successfully!")
+                        // $("#audit").typeahead("val", "");
+                        if( @auditid < 1 ){
+
+                        }
+                        validator.resetForm();
+                        //formdata.trigger("reset");
+                    })
+                    .fail(function () {
+                        toastr.error("Error Occurred. Please fix and try again. ")
+
+                    });
+                    console.log("Returning false...")
+                    return false;
+                } //end submitHandler
+            });
+
         });
-    </script>    
+    </script>
 }
 

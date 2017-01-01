@@ -35,6 +35,7 @@ namespace SmartAudit.Models
         public int Rank { get; set; }
 
         //Navigational
+        public SectionDefinition SectionDefinition { get; set; }
         public int SectionDefinitionId { get; set; }
     }
 }

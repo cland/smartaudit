@@ -15,27 +15,25 @@ namespace SmartAudit.Dtos
         public Candidate Candidate { get; set; }
 
         public DateTime DateCreated { get; set; }
-        public DateTime DateInspectionCompleted { get; set; }
+        public DateTime? DateInspectionCompleted { get; set; }
         public DateTime DateOfInspection { get; set; }
 
         public PeriodType PeriodType { get; set; }
         [Required]
         
-        public int PeriodTypeId { get; set; }
+        public byte PeriodTypeId { get; set; }
 
         [Required]
         public int Year { get; set; }
 
         public int? Month { get; set; }
 
-        public Quarter Quarter { get; set; }
-        
-        public int? QuarterId { get; set; }
+        public Quarter Quarter { get; set; }        
+        public byte? QuarterId { get; set; }
 
         public AuditStatus AuditStatus { get; set; }
-        [Required]
-       
-        public int AuditStatusId { get; set; }
+        [Required]       
+        public byte AuditStatusId { get; set; }
 
         public virtual ICollection<QuestionResult> Questions { get; set; }
     }

@@ -24,14 +24,14 @@ namespace SmartAudit.Models
 
         public DateTime DateCreated { get; set; }
         [Display(Name = "Completion Date")]
-        public DateTime DateInspectionCompleted { get; set; }
+        public DateTime? DateInspectionCompleted { get; set; }
         [Display(Name = "Inspection Date")]
         public DateTime DateOfInspection { get; set; }
 
         public PeriodType PeriodType { get; set; }
         [Required]
         [Display(Name ="Period Type")]
-        public int PeriodTypeId { get; set; }
+        public byte PeriodTypeId { get; set; }
 
         [Required]
         public int Year { get; set; }
@@ -40,12 +40,12 @@ namespace SmartAudit.Models
 
         public Quarter Quarter { get; set; }
         [Display(Name ="Quarter")]
-        public int? QuarterId { get; set; }
+        public byte? QuarterId { get; set; }
 
         public AuditStatus AuditStatus { get; set; }
         [Required]
         [Display(Name ="Status")]
-        public int AuditStatusId { get; set; }
+        public byte AuditStatusId { get; set; }
 
         public virtual ICollection<QuestionResult> Questions { get; set; }
 

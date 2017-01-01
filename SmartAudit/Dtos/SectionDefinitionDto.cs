@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartAudit.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace SmartAudit.Dtos
 {
     public class SectionDefinitionDto
     {
+        public AuditDefinition AuditDefinition { get; set; }
         public int AuditDefinitionId { get; set; }
         public int Id { get; set; }
         [Required]

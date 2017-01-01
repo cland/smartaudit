@@ -12,7 +12,7 @@ namespace SmartAudit.Dtos
         public int Id { get; set; }
         public int AuditDefinitionId { get; set; }
         public int CandidateId { get; set; }
-        public Candidate Candidate { get; set; }
+        public CandidateDto Candidate { get; set; }
 
         public DateTime DateCreated { get; set; }
         public DateTime DateInspectionCompleted { get; set; }

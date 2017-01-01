@@ -9,6 +9,7 @@ namespace SmartAudit.Models
     {
         public const string CanManageDefinitions = "CanManageDefinitions"; //highest
         public const string CanCreateUpdateSections = "CanCreateUpdateSections";
-        public const string CanCreateUpdateQuestions = "CanCreateUpdateQuestions";        
+        public const string CanCreateUpdateQuestions = "CanCreateUpdateQuestions";
+        public const string CanCreateUpdateAudit = "CanCreateUpdateAudit";      
     }
 }
