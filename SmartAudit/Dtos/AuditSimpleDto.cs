@@ -10,6 +10,7 @@ namespace SmartAudit.Dtos
     public class AuditSimpleDto
     {
         public int Id { get; set; }
+        public AuditDefinitionSimpleDto AuditDefinition { get; set; }
         public int AuditDefinitionId { get; set; }
         public int CandidateId { get; set; }
         public CandidateDto Candidate { get; set; }
@@ -38,9 +39,7 @@ namespace SmartAudit.Dtos
         public int AuditStatusId { get; set; }
 
         //added and can be ignore when mapping back to main domain
-        public int SectionId { get; set; }
-        public string SectionName { get; set; }
-        public double SectionWeighting { get; set; }
-        
-    }
-}
+       
+
+    } //end class
+}//end class

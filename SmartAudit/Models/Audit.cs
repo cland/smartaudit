@@ -16,6 +16,7 @@ namespace SmartAudit.Models
             Month = DateTime.Now.Month;          
         }
         public int Id { get; set; }
+        public AuditDefinition AuditDefinition { get; set; }
         [Display(Name = "Audit Definition")]
         public int AuditDefinitionId { get; set; }
 

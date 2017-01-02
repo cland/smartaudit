@@ -14,8 +14,15 @@ namespace SmartAudit.Dtos
         [StringLength(200, ErrorMessage = "Name cannot be longer that 200 characters.")]
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool IsActive { get; set; }
-        //public virtual ICollection<SectionDefinition> Sections { get; set; }
+        public bool IsActive { get; set; }        
         
+        public double TotalSectionWeighting
+        {
+            get
+            {
+                return Sections.Where(s => s.IsActive == true).Sum(s => s.Weighting);
+            }
+        }
+        public virtual ICollection<SectionDefinitionSimpleDto> Sections { get; set; }
     }
 }

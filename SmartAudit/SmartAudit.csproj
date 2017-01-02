@@ -227,10 +227,15 @@
     <Compile Include="Dtos\AuditDefinitionSimpleDto.cs" />
     <Compile Include="Dtos\AuditDefinitionDto.cs" />
     <Compile Include="Dtos\AuditDto.cs" />
+    <Compile Include="Dtos\AuditResultsDto.cs" />
     <Compile Include="Dtos\AuditSimpleDto.cs" />
     <Compile Include="Dtos\CandidateDto.cs" />
     <Compile Include="Dtos\QuestionDefinitionDto.cs" />
+    <Compile Include="Dtos\QuestionDefinitionSimpleDto.cs" />
+    <Compile Include="Dtos\QuestionResultDto.cs" />
+    <Compile Include="Dtos\QuestionResultSimpleDto.cs" />
     <Compile Include="Dtos\SectionDefinitionDto.cs" />
+    <Compile Include="Dtos\SectionDefinitionSimpleDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -293,6 +298,14 @@
     <Compile Include="Migrations\201612311243304_OverrideToStringInCandidate.cs" />
     <Compile Include="Migrations\201612311243304_OverrideToStringInCandidate.Designer.cs">
       <DependentUpon>201612311243304_OverrideToStringInCandidate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701011519214_AddAuditDefinitionNavigationInAudit.cs" />
+    <Compile Include="Migrations\201701011519214_AddAuditDefinitionNavigationInAudit.Designer.cs">
+      <DependentUpon>201701011519214_AddAuditDefinitionNavigationInAudit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201701020527291_IsNotApplicableInQuestionResult.cs" />
+    <Compile Include="Migrations\201701020527291_IsNotApplicableInQuestionResult.Designer.cs">
+      <DependentUpon>201701020527291_IsNotApplicableInQuestionResult.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -681,6 +694,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612311243304_OverrideToStringInCandidate.resx">
       <DependentUpon>201612311243304_OverrideToStringInCandidate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701011519214_AddAuditDefinitionNavigationInAudit.resx">
+      <DependentUpon>201701011519214_AddAuditDefinitionNavigationInAudit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701020527291_IsNotApplicableInQuestionResult.resx">
+      <DependentUpon>201701020527291_IsNotApplicableInQuestionResult.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

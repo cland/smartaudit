@@ -28,6 +28,9 @@ namespace SmartAudit.Controllers
                 // Domain to Dto
                 cfg.CreateMap<Audit, AuditDto>();
                 cfg.CreateMap<Audit, AuditSimpleDto>();
+                cfg.CreateMap<AuditDefinition, AuditDefinitionSimpleDto>();
+                cfg.CreateMap<SectionDefinition, SectionDefinitionSimpleDto>();
+                cfg.CreateMap<QuestionDefinition, QuestionDefinitionSimpleDto>();
                 cfg.CreateMap<Candidate, CandidateDto>();
 
                 // Dto to Domain
@@ -85,6 +88,9 @@ namespace SmartAudit.Controllers
         {
             var audit = _context.Audits
                 .Include(a => a.Candidate)
+                .Include(a => a.PeriodType)
+                .Include(a => a.Quarter)
+                .Include(a => a.AuditStatus)
                 .SingleOrDefault(a => a.Id == Id);
             if(audit == null) return HttpNotFound("Audit with id '" + Id + "' not found");
             var auditDefinition = _context.AuditDefinitions

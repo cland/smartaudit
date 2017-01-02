@@ -28,7 +28,7 @@
             <select id="periodTypeId" name="PeriodTypeId" class="form-control" required>
                 <option value="">Select One</option>
                 @foreach (var item in Model.PeriodTypes)
-            {
+                {
                     <option value="@item.Id" @(item == Model.Audit.PeriodType ? "Selected='True'" : "")>@item.Name</option>
                 }
             </select>
@@ -106,50 +106,66 @@
 @if (!isnew)
 {
     <h2>Sections And Questions</h2>
-    <form id="MainAudit" name="MainAudit">
+    <form id="MainAuditForm" name="MainAudit">
 
-
+        <button name="Save-Audit" class="btn btn-success">Save Audit Results</button>
+       
         @foreach (var sec in Model.AuditDefinition.Sections.Where(s => s.IsActive == true))
         {
             var questionResults = Model.QuestionResults.Where(q => q.QuestionDefinition.SectionDefinitionId == sec.Id);
-            <div id="@sec.Id" class="section-container">
+            <section id="@sec.Id" class="section-container">
+                
                 <div id="section-header-@sec.Id" class="section-header">
-                    @sec.Name  | Section-Score | <button name="Save-Audit" class="btn btn-success">Save Section</button>
+                    @sec.Name  | Section-Score 
                 </div>
-                <div id="section-questions-@sec.Id" class="section-questions">
+                <input type="hidden" name="Section_@sec.Id" />
+                <div id="section-questions-@sec.Id" class="section-questions" data-sectionid="@sec.Id">
+                    
                     @foreach (var que in questionResults)
                     {
                         bool isNewQ = (que.Id == 0 ? true : false);
                         var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
                         var thisScore = (isNewQ ? "--" : que.Score.ToString());
-
-                        <table id="table-@jqueryId" class="table table-condensed table-bordered">
-                            <tr>
-                                <td>
-                                    <input type="hidden" name="Id" id="question-id-@jqueryId" value="@que.Id" />
-                                    <span class="question-displayNumber">@que.QuestionDefinition.DisplayNumber</span>
-                                    <span class="question-text">@que.QuestionDefinition.QuestionText</span>
-                                </td>
-                                <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
-                                <td>Yes/No | N/A | Score  @thisScore</td>
-                            </tr>
-                            <tr>
-                                <td>Guidelines: <span class="question-quideline">@que.QuestionDefinition.Guideline</span></td>
-                                <td><label>Sample Size:</label><span class="question-samplesize">@que.QuestionDefinition.SampleSize</span></td>
-                                <td>
-                                    <label>Complied:</label>
-                                    <div class="question-sampleactual">
-                                        <input type="number" id="question-sampleactual-@jqueryId" name="SampleActual" class="form-control question-sampleactual" value="@que.SampleActual" />
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
+                        <section class="questionInfo" data-questionid="@que.QuestionDefinition.Id">
+                            <input type="hidden" name="QuestionDefinitionId" id="question-definitionid-@que.QuestionDefinition.Id" value="@que.QuestionDefinition.Id" />
+                            <input type="hidden" name="Id" id="question-id-@jqueryId" value="@que.Id" />
+                            <table id="table-@jqueryId" class="table table-condensed table-bordered">
+                                <tr>
+                                    <td>
+                                        <span class="question-displayNumber">@que.QuestionDefinition.DisplayNumber</span>
+                                        <span class="question-text">@que.QuestionDefinition.QuestionText</span>
+                                    </td>
+                                    <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
+                                    <td>
+                                        Yes/No | N/A | Score  @thisScore <br />
+                                        <div class="checkbox">
+                                            <label>
+                                                <input id="qisapplicable-@jqueryId" name="IsNotApplicable" type="checkbox" value="true" @(que.IsNotApplicable ? "checked='checked'" : "") class="checkbox" /> Not Applicable @que.IsNotApplicable
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Guidelines: <span class="question-quideline">@que.QuestionDefinition.Guideline</span></td>
+                                    <td><label>Sample Size:</label><span class="question-samplesize">@que.QuestionDefinition.SampleSize</span></td>
+                                    <td>
+                                        <label>Complied:</label>
+                                        <div class="question-sampleactual">
+                                            <input type="number" id="question-sampleactual-@jqueryId" name="SampleActual" class="form-control question-sampleactual" value="@que.SampleActual" />
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"><textarea id="question-sampledescription" name="SampleDescription" rows="5" class="form-control">@que.SampleDescription</textarea></td>
+                                </tr>
+                            </table>
+                        </section>
                     }
                 </div>
                 <div id="section-footer-@sec.Id" class="section-footer">
 
                 </div>
-            </div>
+            </section>
         }
 
     </form>
@@ -189,7 +205,7 @@
             }, "Please select a valid candidate");
 
             var formdata = $("#AuditForm");
-            var validator = $("#AuditForm").validate({
+            var validator = formdata.validate({
 
                 submitHandler: function () {
                     var _url = "/api/audits";
@@ -222,7 +238,69 @@
                 } //end submitHandler
             });
 
+            //mainaudit results
+            var formresults = $("#MainAuditForm");
+            var validator = formresults.validate({
+
+                submitHandler: function () {
+                    var _url = "/api/audits/updateresults/@auditid";
+                    var _method = "PUT";                                      
+                    var jsondata = {};
+                    var sections = [];
+                    $(".section-questions").each(function () {
+                        var sectionId = $(this).attr("data-sectionid");                        
+                        var sectiondata = [];
+                        $(this).find(".questionInfo").each(function (){
+                            sectiondata[sectiondata.length] = $(this).serializeObject()
+                        });
+                        
+                        sections[sections.length] = {"SectionId": sectionId, "questions": sectiondata};
+                       
+                    })
+                    jsondata.AuditId = @auditid;
+                    jsondata.AuditDefinitionId = @Model.AuditDefinition.Id;
+                    jsondata.sections = sections;
+                    
+                    $.ajax({
+                        url: _url,
+                        method: _method,                       
+                        data: jsondata
+                    })
+                   .done(function () {
+                       toastr.success("Audit results recorded successfully!")
+                       if( @auditid < 1 ){
+
+                       }
+                       validator.resetForm();
+                       //formresults.trigger("reset");
+                   })
+                   .fail(function () {
+                       toastr.error("Error Occurred While trying to update results. Please fix and try again. ")
+
+                   });                 
+
+                    return false;
+                } //end submitHandler
+            });
+
         });
+
+        $.fn.serializeObject = function (data) {
+            var els = $(this).find(':input').get();
+            if (typeof data != 'object') {
+                // return all data
+                data = {};
+                $.each(els, function () {
+                    //&& (this.checked || /select|textarea/i.test(this.nodeName) || /text|hidden|password/i.test(this.type))
+                    if(/checkbox/i.test(this.type)){
+                        data[this.name] = this.checked;
+                    } else if (this.name && !this.disabled) {
+                        data[this.name] = $(this).val();
+                    }
+                });
+                return data;
+            }
+        };
     </script>
 }
 

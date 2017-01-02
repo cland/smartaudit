@@ -11,6 +11,7 @@
     <thead>
         <tr>
             <th>Date Created</th>
+            <th>Audit Name</th>
             <th>Candidate</th>
             <td>Period</td>
             <th>Score</th>
@@ -35,6 +36,9 @@
                         render: function (data, type, audit) {
                             return "<a href='/audit/showaudit/" + audit.id + "'>" + data + "</a>"
                         }
+                    },
+                    {
+                        data: "auditDefinition.name"
                     },
                     {
                         data: "candidate.name"

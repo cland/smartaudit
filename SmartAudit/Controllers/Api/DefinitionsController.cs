@@ -28,6 +28,8 @@ namespace SmartAudit.Controllers.Api
                 cfg.CreateMap<AuditDefinition, AuditDefinitionSimpleDto>();
                 cfg.CreateMap<SectionDefinition, SectionDefinitionDto>();
                 cfg.CreateMap<QuestionDefinition, QuestionDefinitionDto>();
+                cfg.CreateMap<SectionDefinition, SectionDefinitionSimpleDto>();
+                cfg.CreateMap<QuestionDefinition, QuestionDefinitionSimpleDto>();
 
                 // Dto to Domain
 
