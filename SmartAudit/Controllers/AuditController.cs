@@ -32,6 +32,8 @@ namespace SmartAudit.Controllers
                 cfg.CreateMap<SectionDefinition, SectionDefinitionSimpleDto>();
                 cfg.CreateMap<QuestionDefinition, QuestionDefinitionSimpleDto>();
                 cfg.CreateMap<Candidate, CandidateDto>();
+                cfg.CreateMap<QuestionResult, QuestionResultDto>();
+                cfg.CreateMap<SectionDefinition, SectionResultsDto>();
 
                 // Dto to Domain
 
@@ -97,28 +99,34 @@ namespace SmartAudit.Controllers
                 .Include(a => a.Sections)
                 .SingleOrDefault(a => a.Id == audit.AuditDefinitionId);
 
-            //build the questionresults here
-            List<QuestionResult> questionResults = new List<QuestionResult> { };
+            List<SectionResultsDto> sectionResults = new List<SectionResultsDto> { };
             var activeSections = auditDefinition.Sections.Where(s => s.IsActive == true);
-            foreach(var section in activeSections)
+            foreach (var section in activeSections)
             {
+                var sectionResultsDto = mapper.Map<SectionDefinition, SectionResultsDto>(section);
                 var activeQuestions = section.Questions.Where(q => q.IsActive == true);
-                foreach(var question in activeQuestions)
+                foreach (var question in activeQuestions)
                 {
                     var questionResult = _context.QuestionResults.SingleOrDefault(q => q.Id == question.Id);
-                    if (questionResult == null) questionResult = new QuestionResult {
+                    if (questionResult == null)
+                    {
+                        questionResult = new QuestionResult
+                        {
                             QuestionDefinition = question,
                             QuestionDefinitionId = question.Id,
                             SampleActual = 0
                         };
-                    questionResults.Add(questionResult);
+                    }
+                    sectionResultsDto.QuestionResults.Add(mapper.Map<QuestionResult, QuestionResultDto>(questionResult));
                 }
+
+                sectionResults.Add(sectionResultsDto);
             }
             var viewModel = new AuditViewModel
             {
                 AuditDefinition = auditDefinition,
                 Audit = mapper.Map<Audit,AuditSimpleDto>(audit),
-                QuestionResults = questionResults,
+                SectionResults = sectionResults,
                 AuditDefinitions = null,
                 PeriodTypes = _context.PeriodTypes.ToList(),
                 AuditStates = _context.AuditStates.ToList(),
@@ -129,9 +137,40 @@ namespace SmartAudit.Controllers
         public ActionResult ShowAudit(int id)
         {
             var audit = _context.Audits
+                .Include(a => a.AuditDefinition)
                 .SingleOrDefault(a => a.Id == id);
             if (audit == null) return HttpNotFound();
-            return View(_ShowAudit, audit);
+
+            //build the questionresults here
+            List<SectionResultsDto> sectionResults = new List<SectionResultsDto> { };
+            var activeSections = audit.AuditDefinition.Sections.Where(s => s.IsActive == true);
+            foreach (var section in activeSections)
+            {
+                var sectionResultsDto = mapper.Map<SectionDefinition, SectionResultsDto>(section);
+                var activeQuestions = section.Questions.Where(q => q.IsActive == true);
+                foreach (var question in activeQuestions)
+                {
+                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.Id == question.Id);
+                    if (questionResult == null)
+                    {
+                        questionResult = new QuestionResult
+                        {
+                            QuestionDefinition = question,
+                            QuestionDefinitionId = question.Id,
+                            SampleActual = 0
+                        };
+                    }
+                    sectionResultsDto.QuestionResults.Add(mapper.Map<QuestionResult,QuestionResultDto>(questionResult));
+                }
+               
+                sectionResults.Add(sectionResultsDto);
+            }
+            var viewModel = new ShowAuditViewModel
+            {
+                SectionResults = sectionResults,
+                Audit = mapper.Map<Audit, AuditSimpleDto>(audit)
+            };
+            return View(_ShowAudit, viewModel);
         }
 
         

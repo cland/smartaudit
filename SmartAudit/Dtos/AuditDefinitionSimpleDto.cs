@@ -16,13 +16,6 @@ namespace SmartAudit.Dtos
         public string Description { get; set; }
         public bool IsActive { get; set; }        
         
-        public double TotalSectionWeighting
-        {
-            get
-            {
-                return Sections.Where(s => s.IsActive == true).Sum(s => s.Weighting);
-            }
-        }
         public virtual ICollection<SectionDefinitionSimpleDto> Sections { get; set; }
     }
 }

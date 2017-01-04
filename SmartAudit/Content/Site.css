@@ -26,3 +26,13 @@ textarea {
 .input-validation-error, input.error{
     border:2px solid red;
 }
+
+.smartaudit-fullpoints:after{
+    content:"Full"
+}
+.smartaudit-partialpoints:after{
+    content:"Partial"
+}
+.smartaudit-nopoints:after{
+    content:"No-Points"
+}

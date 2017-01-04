@@ -1,9 +1,66 @@
-﻿
+﻿@model SmartAudit.ViewModel.ShowAuditViewModel
 @{
     ViewBag.Title = "ShowAudit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var thisAudit = Model.Audit;
+    var sectionResults = Model.SectionResults;
+    var auditDefinition = Model.Audit.AuditDefinition;
 }
 
 <h2>Show Audit</h2>
+<section id="AuditDetails">
+    <ul>
+        <li>Name: @thisAudit.AuditDefinition.Name</li>
+        <li>Period Type: @thisAudit.PeriodType</li>
+        <li>Inspector: </li>
+        <li>Insepection date: @thisAudit.DateOfInspection</li>
+    </ul>
+</section>
+<section id="MainAudit">
+    <h2>Section Results  </h2>
+    @foreach (var sec in sectionResults)
+    {
+        <section id="">
+            <h3> @sec.Name | Section Score: @sec.SectionWeightedScore % | Weighted Score: @sec.SectionWeightedScore  </h3>
+            @foreach (var que in sec.QuestionResults)
+            {
+                bool isNewQ = (que.Id == 0 ? true : false);
+                var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
+                var thisScore = (isNewQ ? "--" : que.WeightedScore.ToString());
+                <section class="questionInfo" data-questionid="@que.QuestionDefinition.Id">
+                    <h4>@que.QuestionDefinition.DisplayNumber</h4>
+                    <table id="table-@jqueryId" class="table table-condensed table-bordered">
+                        <tr>
+                            <td>
+                                
+                                <span class="question-text">@que.QuestionDefinition.QuestionText</span>
+                            </td>
+                            <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
+                            <td>
+                                <span class="question-score">Score  @thisScore</span> | <span class="@que.scoreDescription"></span> <br />
+                                <div class=""> @(que.IsNotApplicable ? "Not Applicable" : "") </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Guidelines: <span class="question-quideline">@que.QuestionDefinition.Guideline</span></td>
+                            <td><label>Sample Size:</label><span class="question-samplesize">@que.QuestionDefinition.SampleSize</span></td>
+                            <td>
+                                <label>Complied:</label>
+                                <div class="question-sampleactual">
+                                    @que.SampleActual
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">@que.SampleDescription</td>
+                        </tr>
+                    </table>
+                </section>
+            }
+        </section>
+    }
+
+</section>
+<button type="button" onclick="document.location.href='/Audit/EditAudit/@thisAudit.Id'" class="btn btn-success">Edit</button>
 <button type="button" onclick="document.location.href='/Audit'" class="btn btn-danger">Close</button>
 

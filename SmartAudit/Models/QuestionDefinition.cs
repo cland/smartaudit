@@ -33,6 +33,7 @@ namespace SmartAudit.Models
         public bool IsBonus { get; set; }
         public bool IsActive { get; set; }
         public int Rank { get; set; }
+        public double PenaltyValue { get; set; }
 
         //Navigational
         public SectionDefinition SectionDefinition { get; set; }

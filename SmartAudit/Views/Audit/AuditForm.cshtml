@@ -110,9 +110,9 @@
 
         <button name="Save-Audit" class="btn btn-success">Save Audit Results</button>
        
-        @foreach (var sec in Model.AuditDefinition.Sections.Where(s => s.IsActive == true))
+        @foreach (var sec in Model.SectionResults)
         {
-            var questionResults = Model.QuestionResults.Where(q => q.QuestionDefinition.SectionDefinitionId == sec.Id);
+            var questionResults = sec.QuestionResults;
             <section id="@sec.Id" class="section-container">
                 
                 <div id="section-header-@sec.Id" class="section-header">
@@ -125,7 +125,7 @@
                     {
                         bool isNewQ = (que.Id == 0 ? true : false);
                         var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
-                        var thisScore = (isNewQ ? "--" : que.Score.ToString());
+                        var thisScore = (isNewQ ? "--" : que.WeightedScore.ToString());
                         <section class="questionInfo" data-questionid="@que.QuestionDefinition.Id">
                             <input type="hidden" name="QuestionDefinitionId" id="question-definitionid-@que.QuestionDefinition.Id" value="@que.QuestionDefinition.Id" />
                             <input type="hidden" name="Id" id="question-id-@jqueryId" value="@que.Id" />
@@ -137,7 +137,7 @@
                                     </td>
                                     <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
                                     <td>
-                                        Yes/No | N/A | Score  @thisScore <br />
+                                        <span class="question-score">Score  @thisScore</span> | <span class="@que.scoreDescription"></span> <br />
                                         <div class="checkbox">
                                             <label>
                                                 <input id="qisapplicable-@jqueryId" name="IsNotApplicable" type="checkbox" value="true" @(que.IsNotApplicable ? "checked='checked'" : "") class="checkbox" /> Not Applicable @que.IsNotApplicable

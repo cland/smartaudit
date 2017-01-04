@@ -48,7 +48,7 @@ namespace SmartAudit.Models
         [Display(Name ="Status")]
         public byte AuditStatusId { get; set; }
 
-        public virtual ICollection<QuestionResult> Questions { get; set; }
+        public virtual ICollection<QuestionResult> QuestionResults { get; set; }
 
     }
 } //end class

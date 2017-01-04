@@ -20,6 +20,34 @@ namespace SmartAudit.Models
         //Navigational property
         public AuditDefinition AuditDefinition { get; set; }
         public int AuditDefinitionId { get; set; }
+        public double TotalPossibleScore
+        {
+            get
+            {
+                return Questions.Sum(q => q.Weight);
+            }
+        }
+        public double TotalSampleSize
+        {
+            get
+            {
+                return Questions.Sum(q => q.SampleSize);
+            }
+        }
+        public int CountZeroTolerance
+        {
+            get
+            {
+                return Questions.Count(q => q.IsZeroTolerance);
+            }
+        }
+        public int CountBonus
+        {
+            get
+            {
+                return Questions.Count(q => q.IsBonus);
+            }
+        }
         public virtual ICollection<QuestionDefinition> Questions { get; set; }
     }
 }

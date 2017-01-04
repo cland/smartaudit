@@ -20,9 +20,32 @@ namespace SmartAudit.Dtos
         {
             get
             {
-                return (this.SampleActual / QuestionDefinition.SampleSize) * QuestionDefinition.Weight;
+                return (System.Convert.ToDouble(this.SampleActual) / System.Convert.ToDouble(QuestionDefinition.SampleSize)) * QuestionDefinition.Weight;
             }
         }
-        
+        public bool isCorrect
+        {
+            get
+            {
+                return (SampleActual == QuestionDefinition.SampleSize);
+            }
+        }
+        public bool isPartialCorrect
+        {
+            get
+            {
+                return (SampleActual > 0 & !isCorrect);
+            }
+        }
+        public string scoreDescription
+        {
+            get
+            {
+                if (isCorrect) return QuestionResult.FullPoints;
+                if (isPartialCorrect) return QuestionResult.PartialPoints;
+                return QuestionResult.NoPoints;
+            }
+        }
+
     }
 }

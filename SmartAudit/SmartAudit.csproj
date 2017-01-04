@@ -236,6 +236,7 @@
     <Compile Include="Dtos\QuestionResultSimpleDto.cs" />
     <Compile Include="Dtos\SectionDefinitionDto.cs" />
     <Compile Include="Dtos\SectionDefinitionSimpleDto.cs" />
+    <Compile Include="Dtos\SectionResultsDto.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -307,6 +308,10 @@
     <Compile Include="Migrations\201701020527291_IsNotApplicableInQuestionResult.Designer.cs">
       <DependentUpon>201701020527291_IsNotApplicableInQuestionResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701040426412_PenaltyValueInQuestionDefinition.cs" />
+    <Compile Include="Migrations\201701040426412_PenaltyValueInQuestionDefinition.Designer.cs">
+      <DependentUpon>201701040426412_PenaltyValueInQuestionDefinition.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ActionComment.cs" />
@@ -328,6 +333,7 @@
     <Compile Include="ViewModel\AuditSectionViewModel.cs" />
     <Compile Include="ViewModel\AuditViewModel.cs" />
     <Compile Include="ViewModel\QuestionViewModel.cs" />
+    <Compile Include="ViewModel\ShowAuditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
@@ -700,6 +706,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701020527291_IsNotApplicableInQuestionResult.resx">
       <DependentUpon>201701020527291_IsNotApplicableInQuestionResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701040426412_PenaltyValueInQuestionDefinition.resx">
+      <DependentUpon>201701040426412_PenaltyValueInQuestionDefinition.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

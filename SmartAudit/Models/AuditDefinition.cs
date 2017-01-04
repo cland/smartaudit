@@ -14,6 +14,35 @@ namespace SmartAudit.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsActive { get; set; }
+
+        public double TotalPossibleScore
+        {
+            get
+            {
+                return Sections.Sum(q => q.TotalPossibleScore);
+            }
+        }
+        public double TotalSampleSize
+        {
+            get
+            {
+                return Sections.Sum(q => q.TotalSampleSize);
+            }
+        }
+        public int CountZeroTolerance
+        {
+            get
+            {
+                return Sections.Sum(q => q.CountZeroTolerance);
+            }
+        }
+        public int CountBonus
+        {
+            get
+            {
+                return Sections.Sum(q => q.CountBonus);
+            }
+        }
         public virtual ICollection<SectionDefinition> Sections { get; set; }
     }
 }

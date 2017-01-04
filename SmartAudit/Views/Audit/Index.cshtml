@@ -47,9 +47,9 @@
                         data: "periodType.name"
                     },
                     {
-                        data: "Score",
+                        data: "weightedScore",
                         render: function (data) {
-                            return "0%";
+                            return data.toFixed(2);
                         }
                     },
                     {

@@ -32,6 +32,8 @@ namespace SmartAudit.Controllers.Api
                 cfg.CreateMap<SectionDefinition, SectionDefinitionSimpleDto>();
                 cfg.CreateMap<QuestionDefinition, QuestionDefinitionDto>();
                 cfg.CreateMap<QuestionDefinition, QuestionDefinitionSimpleDto>();
+                cfg.CreateMap<SectionDefinitionSimpleDto, SectionResultsDto>();
+                cfg.CreateMap<QuestionResult, QuestionResultDto>();
                 // Dto to Domain
 
                 cfg.CreateMap<AuditDto, Audit>()
@@ -41,6 +43,7 @@ namespace SmartAudit.Controllers.Api
                 .ForMember(c => c.Id, opt => opt.Ignore());
                 cfg.CreateMap<CandidateDto, Candidate>()
                 .ForMember(c => c.Id, opt => opt.Ignore());
+                cfg.CreateMap<QuestionDefinitionSimpleDto, QuestionDefinition>();
             });
 
 
@@ -64,10 +67,42 @@ namespace SmartAudit.Controllers.Api
                 auditsQuery = _context.Audits.Where(a => a.Candidate.Name.Contains(query));
             }
             var auditDtos = auditsQuery
+                .Include(a => a.QuestionResults)
                 .ToList()
                 .Select(mapper.Map<Audit, AuditSimpleDto>);
 
-            return Ok(auditDtos);
+            List<AuditSimpleDto> auditResults = new List<AuditSimpleDto>();
+            foreach (var audit in auditDtos)
+            {
+                //build the questionresults here
+                List<SectionResultsDto> sectionResults = new List<SectionResultsDto> { };
+                var activeSections = audit.AuditDefinition.Sections.Where(s => s.IsActive == true);
+                foreach (var section in activeSections)
+                {
+                    var sectionResultsDto = mapper.Map<SectionDefinitionSimpleDto, SectionResultsDto>(section);
+                    var activeQuestions = section.Questions.Where(q => q.IsActive == true);
+                    foreach (var question in activeQuestions)
+                    {
+                        var questionResult = _context.QuestionResults.SingleOrDefault(q => q.Id == question.Id);
+                        if (questionResult == null)
+                        {
+                            questionResult = new QuestionResult
+                            {
+                                QuestionDefinition = mapper.Map<QuestionDefinitionSimpleDto,QuestionDefinition>(question),
+                                QuestionDefinitionId = question.Id,
+                                SampleActual = 0
+                            };
+                        }
+                        sectionResultsDto.QuestionResults.Add(mapper.Map<QuestionResult, QuestionResultDto>(questionResult));
+                    }
+
+                    audit.SectionResults.Add(sectionResultsDto);                    
+                }
+                audit.AuditDefinition.Sections = null;
+                auditResults.Add(audit);
+            } //end for each audit
+
+            return Ok(auditResults);
         } //
 
         // GET /api/audits/1

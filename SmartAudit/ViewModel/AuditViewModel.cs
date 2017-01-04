@@ -11,7 +11,8 @@ namespace SmartAudit.ViewModel
     {
         public AuditDefinition AuditDefinition { get; set; }
         public AuditSimpleDto Audit { get; set; }
-        public IEnumerable<QuestionResult> QuestionResults { get; set; }
+       // public IEnumerable<QuestionResult> QuestionResults { get; set; }
+        public List<SectionResultsDto> SectionResults { get; set; }
         //lookup values
         public IEnumerable<AuditDefinition> AuditDefinitions { get; set; }
         public IEnumerable<Quarter> Quarters { get; set; }

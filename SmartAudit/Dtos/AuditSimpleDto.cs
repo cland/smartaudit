@@ -9,6 +9,10 @@ namespace SmartAudit.Dtos
 {
     public class AuditSimpleDto
     {
+        public AuditSimpleDto()
+        {
+            SectionResults = new List<SectionResultsDto>();
+        }
         public int Id { get; set; }
         public AuditDefinitionSimpleDto AuditDefinition { get; set; }
         public int AuditDefinitionId { get; set; }
@@ -37,9 +41,21 @@ namespace SmartAudit.Dtos
         [Required]
 
         public int AuditStatusId { get; set; }
-
-        //added and can be ignore when mapping back to main domain
-       
-
+        
+        public double weightedScore
+        {
+            get
+            {                
+                return SectionResults.Sum(q => q.SectionWeightedScore);
+            }
+        }
+        public double absoluteScore
+        {
+            get
+            {
+                return SectionResults.Sum(q => q.SectionAbsoluteScore);
+            }
+        }
+        public List<SectionResultsDto> SectionResults { get; set; }
     } //end class
 }//end class

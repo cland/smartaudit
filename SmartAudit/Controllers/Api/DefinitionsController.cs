@@ -125,7 +125,21 @@ namespace SmartAudit.Controllers.Api
             var auditDefinitionInDb = _context.AuditDefinitions.SingleOrDefault(c => c.Id == id);
             if (auditDefinitionInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
-            _context.AuditDefinitions.Remove(auditDefinitionInDb);
+
+            var audit = _context.Audits.FirstOrDefault(a => a.AuditDefinitionId == auditDefinitionInDb.Id);
+            if(audit == null)
+            {
+                //we can delete the audit definition
+                _context.AuditDefinitions.Remove(auditDefinitionInDb);
+            }
+            else
+            {
+                //set the auditdefinition to in-active
+                //TODO: Need to handle this better
+                auditDefinitionInDb.IsActive = false;
+            }
+
+            
             _context.SaveChanges();
         }
 

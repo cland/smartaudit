@@ -55,7 +55,7 @@
                 bootbox.confirm("Are you sure you want to delete this audit definition?", function (result) {
                     if(result){
                         $.ajax({
-                            url: "/api/definition/" + button.attr("data-audit-id"),
+                            url: "/api/definitions/" + button.attr("data-audit-id"),
                             method: "DELETE",
                             success: function () {
                                 audittable.row(button.parents("tr")).remove().draw();
