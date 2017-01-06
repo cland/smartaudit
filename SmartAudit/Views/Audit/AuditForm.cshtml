@@ -3,11 +3,14 @@
     ViewBag.Title = "AuditForm";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var auditid = Model.Audit.Id;
+    var thisAudit = Model.Audit;
+    var sectionResults = thisAudit.SectionResults;
     var isnew = (auditid > 0 ? false : true);
     int[] months = Enumerable.Range(1, 12).ToArray();
     string[] monthnames = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
     int curMonth = (Model.Audit.Month != null ? (int)Model.Audit.Month : DateTime.Today.Month);
     var candidate = Model.Audit.Candidate;
+    var fmt = "{0:0.0#}";
 }
 
 <h2>@(isnew ? "New" : "Update") Audit @Model.AuditDefinition.Id</h2>
@@ -110,14 +113,14 @@
 
         <button name="Save-Audit" class="btn btn-success">Save Audit Results</button>
        
-        @foreach (var sec in Model.SectionResults)
+        @foreach (var sec in sectionResults)
         {
             var questionResults = sec.QuestionResults;
             <section id="@sec.Id" class="section-container">
                 
-                <div id="section-header-@sec.Id" class="section-header">
-                    @sec.Name  | Section-Score 
-                </div>
+                <h3 id="section-header-@sec.Id" class="section-header">
+                    @sec.Name  | Section-Score
+                </h3>
                 <input type="hidden" name="Section_@sec.Id" />
                 <div id="section-questions-@sec.Id" class="section-questions" data-sectionid="@sec.Id">
                     
@@ -125,7 +128,8 @@
                     {
                         bool isNewQ = (que.Id == 0 ? true : false);
                         var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
-                        var thisScore = (isNewQ ? "--" : que.WeightedScore.ToString());
+                        var thisScoreA = (isNewQ ? "--" : que.ScoreA.ToString());
+                        var thisScoreB = (isNewQ ? "--" : (String.Format(fmt, que.effectiveScoreB())));
                         <section class="questionInfo" data-questionid="@que.QuestionDefinition.Id">
                             <input type="hidden" name="QuestionDefinitionId" id="question-definitionid-@que.QuestionDefinition.Id" value="@que.QuestionDefinition.Id" />
                             <input type="hidden" name="Id" id="question-id-@jqueryId" value="@que.Id" />
@@ -137,7 +141,7 @@
                                     </td>
                                     <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
                                     <td>
-                                        <span class="question-score">Score  @thisScore</span> | <span class="@que.scoreDescription"></span> <br />
+                                        <span class="score-a question-score-a">ScoreA:  @thisScoreA</span> | <span class="score-b question-score-b">ScoreB:  @thisScoreB</span> | <span class="@que.scoreDescription"></span> <br />
                                         <div class="checkbox">
                                             <label>
                                                 <input id="qisapplicable-@jqueryId" name="IsNotApplicable" type="checkbox" value="true" @(que.IsNotApplicable ? "checked='checked'" : "") class="checkbox" /> Not Applicable @que.IsNotApplicable

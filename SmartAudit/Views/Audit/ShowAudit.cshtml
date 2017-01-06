@@ -3,8 +3,9 @@
     ViewBag.Title = "ShowAudit";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var thisAudit = Model.Audit;
-    var sectionResults = Model.SectionResults;
+    var sectionResults = thisAudit.SectionResults;
     var auditDefinition = Model.Audit.AuditDefinition;
+    var fmt = "{0:0.0#}";
 }
 
 <h2>Show Audit</h2>
@@ -16,28 +17,64 @@
         <li>Insepection date: @thisAudit.DateOfInspection</li>
     </ul>
 </section>
+<button type="button" onclick="document.location.href='/Audit/EditAudit/@thisAudit.Id'" class="btn btn-success">Edit</button>
+<button type="button" onclick="document.location.href='/Audit'" class="btn btn-danger">Close</button>
+<section id="AuditScores">
+    <h2>Audit Score</h2>
+    <ul>
+        <li class="score-a">Score A: @(String.Format(fmt, thisAudit.ScoreA))%</li>
+        <li class="score-b">Score B: @(String.Format(fmt,thisAudit.ScoreB))%</li>
+    </ul>
+</section>
 <section id="MainAudit">
     <h2>Section Results  </h2>
+    <section class="section-result-summary">
+        <h3>SUMMARY</h3>
+        <table class="table table-bordered table-condensed table-responsive">
+            <thead>
+                <tr><th>Section Name</th><th>Score A: Contribution</th><th>Score B: Contribution</th><th>Section Score A %</th><th>Section Score B %</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var sec in sectionResults)
+                {
+                    <tr>
+                        <td>@sec.Name</td>
+                        <td>@(String.Format(fmt, sec.ScoreA))</td>
+                        <td>@(String.Format(fmt, sec.ScoreB))</td>
+                        <td>@(String.Format(fmt, sec.SectionPercentageScoreA))%</td>
+                        <td>@(String.Format(fmt, sec.SectionPercentageScoreB))%</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </section>
+    <hr/>
     @foreach (var sec in sectionResults)
     {
-        <section id="">
-            <h3> @sec.Name | Section Score: @sec.SectionWeightedScore % | Weighted Score: @sec.SectionWeightedScore  </h3>
+        <section id="section-@sec.Id">
+            <h3>@sec.Name</h3>
+            <div id="section-scores">
+                <span class="score-a section-score-a">ScoreA: @(String.Format(fmt, sec.ScoreA)) (@(String.Format(fmt, sec.SectionPercentageScoreA)) %)</span>
+                |
+                <span class="score-b section-score-b">ScoreB: @(String.Format(fmt, sec.ScoreB)) (@(String.Format(fmt, sec.SectionPercentageScoreB)) %)</span>
+            </div>
             @foreach (var que in sec.QuestionResults)
             {
                 bool isNewQ = (que.Id == 0 ? true : false);
                 var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
-                var thisScore = (isNewQ ? "--" : que.WeightedScore.ToString());
-                <section class="questionInfo" data-questionid="@que.QuestionDefinition.Id">
+                var thisScoreA = (isNewQ ? "--" : que.ScoreA.ToString());
+                var thisScoreB = (isNewQ ? "--" : (String.Format(fmt, que.effectiveScoreB())));
+                <section class="questionInfo" data-questionid="@que.QuestionDefinitionId">
                     <h4>@que.QuestionDefinition.DisplayNumber</h4>
                     <table id="table-@jqueryId" class="table table-condensed table-bordered">
                         <tr>
                             <td>
-                                
+
                                 <span class="question-text">@que.QuestionDefinition.QuestionText</span>
                             </td>
                             <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
                             <td>
-                                <span class="question-score">Score  @thisScore</span> | <span class="@que.scoreDescription"></span> <br />
+                                <span class="score-a question-score-a">ScoreA:  @thisScoreA</span> | <span class="score-b question-score-b">ScoreB:  @thisScoreB</span> | <span class="@que.scoreDescription"></span> <br />
                                 <div class=""> @(que.IsNotApplicable ? "Not Applicable" : "") </div>
                             </td>
                         </tr>

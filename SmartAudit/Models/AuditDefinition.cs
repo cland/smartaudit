@@ -19,28 +19,28 @@ namespace SmartAudit.Models
         {
             get
             {
-                return Sections.Sum(q => q.TotalPossibleScore);
+                return (Sections != null ? Sections.Sum(q => q.TotalPossibleScore):0.0);
             }
         }
         public double TotalSampleSize
         {
             get
             {
-                return Sections.Sum(q => q.TotalSampleSize);
+                return (Sections != null ? Sections.Sum(q => q.TotalSampleSize):0.0);
             }
         }
         public int CountZeroTolerance
         {
             get
             {
-                return Sections.Sum(q => q.CountZeroTolerance);
+                return (Sections != null ? Sections.Sum(q => q.CountZeroTolerance):0);
             }
         }
         public int CountBonus
         {
             get
             {
-                return Sections.Sum(q => q.CountBonus);
+                return (Sections != null ? Sections.Sum(q => q.CountBonus):0);
             }
         }
         public virtual ICollection<SectionDefinition> Sections { get; set; }

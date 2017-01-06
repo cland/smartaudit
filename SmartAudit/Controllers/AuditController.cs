@@ -107,7 +107,7 @@ namespace SmartAudit.Controllers
                 var activeQuestions = section.Questions.Where(q => q.IsActive == true);
                 foreach (var question in activeQuestions)
                 {
-                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.Id == question.Id);
+                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id);
                     if (questionResult == null)
                     {
                         questionResult = new QuestionResult
@@ -117,16 +117,22 @@ namespace SmartAudit.Controllers
                             SampleActual = 0
                         };
                     }
+                    else
+                    {
+                        questionResult.QuestionDefinition = question;
+                    }
                     sectionResultsDto.QuestionResults.Add(mapper.Map<QuestionResult, QuestionResultDto>(questionResult));
                 }
 
                 sectionResults.Add(sectionResultsDto);
             }
+            var auditSimpleDto = mapper.Map<Audit, AuditSimpleDto>(audit);
+            auditSimpleDto.SectionResults = sectionResults;
             var viewModel = new AuditViewModel
             {
                 AuditDefinition = auditDefinition,
-                Audit = mapper.Map<Audit,AuditSimpleDto>(audit),
-                SectionResults = sectionResults,
+                Audit = auditSimpleDto,
+                //SectionResults = sectionResults,
                 AuditDefinitions = null,
                 PeriodTypes = _context.PeriodTypes.ToList(),
                 AuditStates = _context.AuditStates.ToList(),
@@ -150,7 +156,7 @@ namespace SmartAudit.Controllers
                 var activeQuestions = section.Questions.Where(q => q.IsActive == true);
                 foreach (var question in activeQuestions)
                 {
-                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.Id == question.Id);
+                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id);
                     if (questionResult == null)
                     {
                         questionResult = new QuestionResult
@@ -159,16 +165,21 @@ namespace SmartAudit.Controllers
                             QuestionDefinitionId = question.Id,
                             SampleActual = 0
                         };
+                    }else
+                    {
+                        questionResult.QuestionDefinition = question;
                     }
                     sectionResultsDto.QuestionResults.Add(mapper.Map<QuestionResult,QuestionResultDto>(questionResult));
                 }
                
                 sectionResults.Add(sectionResultsDto);
             }
+            var auditSimpleDto = mapper.Map<Audit, AuditSimpleDto>(audit);
+            auditSimpleDto.SectionResults = sectionResults;
             var viewModel = new ShowAuditViewModel
             {
-                SectionResults = sectionResults,
-                Audit = mapper.Map<Audit, AuditSimpleDto>(audit)
+                //SectionResults = sectionResults,
+                Audit = auditSimpleDto
             };
             return View(_ShowAudit, viewModel);
         }

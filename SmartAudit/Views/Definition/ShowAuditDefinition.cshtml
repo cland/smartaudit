@@ -22,7 +22,7 @@
     {
         <table id="sections" class="table table-bordered table-hover table-responsive">
             <thead>
-                <tr><th>Order</th><th>Name</th><th>Section Weighting</th><th>Possible Score</th><th>Status</th><th>Total Questions</th><th>Actions</th></tr>
+                <tr><th>Order</th><th>Name</th><th>Section Weighting</th><th>Possible Score</th><th>Status</th><th>Active Questions</th><th>In-Active Questions</th><th>Actions</th></tr>
             </thead>
             <tbody>
                 @foreach (var sec in Model.Sections)
@@ -33,7 +33,8 @@
                         <td>@sec.Weighting %</td>
                         <td>@sec.TotalPossibleScore</td>
                         <td>@(sec.IsActive ? "Active" : "In-Active") </td>
-                        <td>@sec.Questions.Count()</td>
+                        <td>@sec.Questions.Where(q => q.IsActive == true).Count()</td>
+                        <td>@sec.Questions.Where(q => q.IsActive == false).Count()</td>
                         <td><button class='btn btn-link js-edit' data-section-id="@sec.Id">Edit</button></td>
                     </tr>
                 }

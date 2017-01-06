@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "List of Audits";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var _fixed = 2;
 }
 
 <h2>List of Audits</h2>
@@ -13,9 +14,10 @@
             <th>Date Created</th>
             <th>Audit Name</th>
             <th>Candidate</th>
-            <td>Period</td>
-            <th>Score</th>
-            <td>Actions</td>
+            <th>Period</th>
+            <th>Score A</th>
+            <th>Score B</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -47,12 +49,17 @@
                         data: "periodType.name"
                     },
                     {
-                        data: "weightedScore",
+                        data: "scoreA",
                         render: function (data) {
-                            return data.toFixed(2);
+                            return data.toFixed(@_fixed) + "%";
                         }
                     },
                     {
+                        data: "scoreB",
+                        render: function (data) {
+                            return data.toFixed(@_fixed) + "%";
+                        }
+                    }, {
                         data: "id",
                         render: function (data) {
                             return "<button class='btn btn-link js-edit' data-audit-id=" + data + ">Edit</button>"

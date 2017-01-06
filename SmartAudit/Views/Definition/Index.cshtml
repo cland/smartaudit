@@ -6,6 +6,7 @@
 
 <h2>Available Audit Definitions</h2>
 <a class="btn btn-primary" href="/Definition/NewAudit">New Audit Definition</a>
+<a class="btn btn-primary" href="/Definition/UploadAuditDefinition">Upload Audit Definition</a>
 <table id="audits" class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -45,6 +46,7 @@
                             return "<button class='btn btn-link btn-success js-start' data-audit-id=" + data + ">START AN AUDIT</button>"
                                 + "<button class='btn btn-link  js-edit' data-audit-id=" + data + ">Edit</button>"
                                 + "<button class='btn btn-link js-delete' data-audit-id=" + data + ">Delete</button>"
+                                + "<button class='btn btn-link js-copy' data-audit-id=" + data + ">Copy Audit</button>"
                         }
                     }
                 ]
@@ -72,6 +74,12 @@
            $("#audits").on("click", ".js-start", function () {
                var button = $(this);
                document.location.href = "/Audit/NewAudit/" + button.attr("data-audit-id");
+           });
+           $("#audits").on("click", ".js-copy", function () {
+               alert("Function not yet implemented!");
+               return;
+               var button = $(this);
+               document.location.href = "/Definition/CopyAudit/" + button.attr("data-audit-id");
            });
          });
     </script>

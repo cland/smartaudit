@@ -24,28 +24,28 @@ namespace SmartAudit.Models
         {
             get
             {
-                return Questions.Sum(q => q.Weight);
+                return (Questions != null ? Questions.Sum(q => q.Weight):0.0);
             }
         }
         public double TotalSampleSize
         {
             get
             {
-                return Questions.Sum(q => q.SampleSize);
+                return (Questions != null ? Questions.Sum(q => q.SampleSize):0.0);
             }
         }
         public int CountZeroTolerance
         {
             get
             {
-                return Questions.Count(q => q.IsZeroTolerance);
+                return (Questions != null ? Questions.Count(q => q.IsZeroTolerance):0);
             }
         }
         public int CountBonus
         {
             get
             {
-                return Questions.Count(q => q.IsBonus);
+                return (Questions != null ? Questions.Count(q => q.IsBonus):0);
             }
         }
         public virtual ICollection<QuestionDefinition> Questions { get; set; }

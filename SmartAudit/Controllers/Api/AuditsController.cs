@@ -80,10 +80,12 @@ namespace SmartAudit.Controllers.Api
                 foreach (var section in activeSections)
                 {
                     var sectionResultsDto = mapper.Map<SectionDefinitionSimpleDto, SectionResultsDto>(section);
+                    sectionResultsDto.QuestionResults.Clear();
                     var activeQuestions = section.Questions.Where(q => q.IsActive == true);
+                    audit.Info += " | Section: " + section.Name + " - Question Count: " + activeQuestions.Count();
                     foreach (var question in activeQuestions)
                     {
-                        var questionResult = _context.QuestionResults.SingleOrDefault(q => q.Id == question.Id);
+                        var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id);
                         if (questionResult == null)
                         {
                             questionResult = new QuestionResult

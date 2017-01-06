@@ -13,6 +13,7 @@ namespace SmartAudit.Dtos
         {
             SectionResults = new List<SectionResultsDto>();
         }
+        public string Info { get; set; }
         public int Id { get; set; }
         public AuditDefinitionSimpleDto AuditDefinition { get; set; }
         public int AuditDefinitionId { get; set; }
@@ -41,21 +42,22 @@ namespace SmartAudit.Dtos
         [Required]
 
         public int AuditStatusId { get; set; }
-        
-        public double weightedScore
-        {
-            get
-            {                
-                return SectionResults.Sum(q => q.SectionWeightedScore);
-            }
-        }
-        public double absoluteScore
+
+        public double ScoreA
         {
             get
             {
-                return SectionResults.Sum(q => q.SectionAbsoluteScore);
+                return (SectionResults != null ? SectionResults.Sum(sec => sec.ScoreA) : 0.0);
             }
         }
+        public double ScoreB
+        {
+            get
+            {                
+                return (SectionResults != null ? SectionResults.Sum(sec => sec.ScoreB):0.0);
+            }
+        }
+        
         public List<SectionResultsDto> SectionResults { get; set; }
     } //end class
 }//end class

@@ -17,19 +17,33 @@ namespace SmartAudit.Dtos
         public bool IsNotApplicable { get; set; }
         public string SampleDescription { get; set; }
 
-        public double WeightedScore
+        public double ScoreA
         {
             get
             {
-                return (System.Convert.ToDouble(this.SampleActual) / System.Convert.ToDouble(QuestionDefinition.SampleSize)) * QuestionDefinition.Weight;
+                return (isCorrect ? QuestionDefinition.Weight : 0.0);
             }
         }
-        public double AbsoluteScore
+        public double ScoreB
         {
             get
             {
-                return (isCorrect ? QuestionDefinition.Weight : 0);
+                return (QuestionDefinition.IsZeroTolerance & (QuestionDefinition.ToleranceLimit < (QuestionDefinition.SampleSize-SampleActual)) ?
+                    ScoreA :
+                    ((Convert.ToDouble(this.SampleActual) / Convert.ToDouble(QuestionDefinition.SampleSize)) * QuestionDefinition.Weight) 
+                    );
+                
             }
+        }
+
+        public double effectiveScoreB()
+        {
+            if (IsNotApplicable) return 0;
+            return ScoreB;
+        }
+        public double effectiveWeight()
+        {
+            return (QuestionDefinition.IsBonus || IsNotApplicable ? 0 : QuestionDefinition.Weight);
         }
         public bool isCorrect
         {
