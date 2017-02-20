@@ -10,8 +10,9 @@
 <table id="audits" class="table table-bordered table-hover">
     <thead>
         <tr>
-            <th>Name</th> 
-            <th>Is Active</th>            
+            <th>Name</th>
+            <th>Is Active</th>
+            <th>Linked Audits</th>
             <td>Actions</td>
         </tr>
     </thead>
@@ -41,6 +42,11 @@
                         }
                     },
                     {
+                        data: "linkedAudits",
+                        render: function (data) {
+                            return "1"
+                        }
+                    }, {
                         data: "id",
                         render: function (data) {
                             return "<button class='btn btn-link btn-success js-start' data-audit-id=" + data + ">START AN AUDIT</button>"

@@ -107,7 +107,7 @@ namespace SmartAudit.Controllers
                 var activeQuestions = section.Questions.Where(q => q.IsActive == true);
                 foreach (var question in activeQuestions)
                 {
-                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id);
+                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id & q.AuditId == audit.Id);
                     if (questionResult == null)
                     {
                         questionResult = new QuestionResult
@@ -156,7 +156,7 @@ namespace SmartAudit.Controllers
                 var activeQuestions = section.Questions.Where(q => q.IsActive == true);
                 foreach (var question in activeQuestions)
                 {
-                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id);
+                    var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id & q.AuditId == audit.Id);
                     if (questionResult == null)
                     {
                         questionResult = new QuestionResult

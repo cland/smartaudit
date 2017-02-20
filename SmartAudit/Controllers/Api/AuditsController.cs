@@ -85,7 +85,7 @@ namespace SmartAudit.Controllers.Api
                     audit.Info += " | Section: " + section.Name + " - Question Count: " + activeQuestions.Count();
                     foreach (var question in activeQuestions)
                     {
-                        var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id);
+                        var questionResult = _context.QuestionResults.SingleOrDefault(q => q.QuestionDefinitionId == question.Id & q.AuditId == audit.Id);
                         if (questionResult == null)
                         {
                             questionResult = new QuestionResult
@@ -187,7 +187,7 @@ namespace SmartAudit.Controllers.Api
                         }else
                         {
                             //update existing
-                            var questionInDb = _context.QuestionResults.SingleOrDefault(q => q.Id == result.Id);
+                            var questionInDb = _context.QuestionResults.SingleOrDefault(q => q.Id == result.Id & q.AuditId == auditInDb.Id);
                             questionInDb.SampleActual = result.SampleActual;
                             questionInDb.IsNotApplicable = result.IsNotApplicable;
                             questionInDb.SampleDescription = result.SampleDescription;
