@@ -648,6 +648,7 @@
     <Content Include="Views\Audit\AuditForm.cshtml" />
     <Content Include="Views\Audit\ShowAudit.cshtml" />
     <Content Include="Views\Definition\UploadAuditDefinition.cshtml" />
+    <Content Include="Views\Candidate\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

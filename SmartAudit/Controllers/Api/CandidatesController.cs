@@ -33,7 +33,7 @@ namespace SmartAudit.Controllers.Api
 
         } //end constructor
 
-        // GET /api/auditdefinitions
+        // GET /api/getcandidates
         public IHttpActionResult GetCandidates(string query = null)
         {
             var candidatesQuery = (IEnumerable<Candidate>)_context.Candidates;

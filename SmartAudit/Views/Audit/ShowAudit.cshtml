@@ -7,7 +7,17 @@
     var auditDefinition = Model.Audit.AuditDefinition;
     var fmt = "{0:0.0#}";
 }
+<style type="text/css">
+#Tab1 .nav-pills > li > a {
+  border-radius: 4px 4px 0 0 ;
+}
 
+#Tab1 .tab-content {
+  color : white;
+  background-color: #428bca;
+  padding : 5px 10px;
+}
+</style>
 <h2>Show Audit</h2>
 <section id="AuditDetails">
     <ul>
@@ -19,85 +29,103 @@
 </section>
 <button type="button" onclick="document.location.href='/Audit/EditAudit/@thisAudit.Id'" class="btn btn-success">Edit</button>
 <button type="button" onclick="document.location.href='/Audit'" class="btn btn-danger">Close</button>
-<section id="AuditScores">
-    <h2>Audit Score</h2>
-    <ul>
-        <li class="score-a">Score A: @(String.Format(fmt, thisAudit.ScoreA))%</li>
-        <li class="score-b">Score B: @(String.Format(fmt,thisAudit.ScoreB))%</li>
+
+
+<div id="Tab1" class="container">
+    <ul class="nav nav-pills">
+        <li class="active">
+            <a href="#1b" data-toggle="tab">Summary</a>
+        </li>
+        <li>
+            <a href="#2b" data-toggle="tab">Section Details</a>
+        </li>
     </ul>
-</section>
-<section id="MainAudit">
-    <h2>Section Results  </h2>
-    <section class="section-result-summary">
-        <h3>SUMMARY</h3>
-        <table class="table table-bordered table-condensed table-responsive">
-            <thead>
-                <tr><th>Section Name</th><th>Score A: Contribution</th><th>Score B: Contribution</th><th>Section Score A %</th><th>Section Score B %</th></tr>
-            </thead>
-            <tbody>
+
+    <div class="tab-content clearfix">
+        <div class="tab-pane active" id="1b">
+            <section id="AuditScores">
+                <h2>Audit Score</h2>
+                <ul>
+                    <li class="score-a">Score A: @(String.Format(fmt, thisAudit.ScoreA))%</li>
+                    <li class="score-b">Score B: @(String.Format(fmt, thisAudit.ScoreB))%</li>
+                </ul>
+            </section>
+            <section class="section-result-summary">
+                <table class="table table-bordered table-condensed table-responsive">
+                    <thead>
+                        <tr><th>Section Name</th><th>Score A: Contribution</th><th>Score B: Contribution</th><th>Section Score A %</th><th>Section Score B %</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sec in sectionResults)
+                        {
+                            <tr>
+                                <td>@sec.Name</td>
+                                <td>@(String.Format(fmt, sec.ScoreA))</td>
+                                <td>@(String.Format(fmt, sec.ScoreB))</td>
+                                <td>@(String.Format(fmt, sec.SectionPercentageScoreA))%</td>
+                                <td>@(String.Format(fmt, sec.SectionPercentageScoreB))%</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        <div class="tab-pane" id="2b">
+
+            <section id="MainAudit">
                 @foreach (var sec in sectionResults)
                 {
-                    <tr>
-                        <td>@sec.Name</td>
-                        <td>@(String.Format(fmt, sec.ScoreA))</td>
-                        <td>@(String.Format(fmt, sec.ScoreB))</td>
-                        <td>@(String.Format(fmt, sec.SectionPercentageScoreA))%</td>
-                        <td>@(String.Format(fmt, sec.SectionPercentageScoreB))%</td>
-                    </tr>
+                    <section id="section-@sec.Id">
+                        <h3>@sec.Name</h3>
+                        <div id="section-scores">
+                            <span class="score-a section-score-a">ScoreA: @(String.Format(fmt, sec.ScoreA)) (@(String.Format(fmt, sec.SectionPercentageScoreA)) %)</span>
+                            |
+                            <span class="score-b section-score-b">ScoreB: @(String.Format(fmt, sec.ScoreB)) (@(String.Format(fmt, sec.SectionPercentageScoreB)) %)</span>
+                        </div>
+                        @foreach (var que in sec.QuestionResults)
+                        {
+                            bool isNewQ = (que.Id == 0 ? true : false);
+                            var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
+                            var thisScoreA = (isNewQ ? "--" : que.ScoreA.ToString());
+                            var thisScoreB = (isNewQ ? "--" : (String.Format(fmt, que.effectiveScoreB())));
+                            <section class="questionInfo" data-questionid="@que.QuestionDefinitionId">
+                                <h4>@que.QuestionDefinition.DisplayNumber</h4>
+                                <table id="table-@jqueryId" class="table table-condensed table-bordered">
+                                    <tr>
+                                        <td>
+
+                                            <span class="question-text">@que.QuestionDefinition.QuestionText</span>
+                                        </td>
+                                        <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
+                                        <td>
+                                            <span class="score-a question-score-a">ScoreA:  @thisScoreA</span> | <span class="score-b question-score-b">ScoreB:  @thisScoreB</span> | <span class="@que.scoreDescription"></span> <br />
+                                            <div class=""> @(que.IsNotApplicable ? "Not Applicable" : "") </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Guidelines: <span class="question-quideline">@que.QuestionDefinition.Guideline</span></td>
+                                        <td><label>Sample Size:</label><span class="question-samplesize">@que.QuestionDefinition.SampleSize</span></td>
+                                        <td>
+                                            <label>Complied:</label>
+                                            <div class="question-sampleactual">
+                                                @que.SampleActual
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">@que.SampleDescription</td>
+                                    </tr>
+                                </table>
+                            </section>
+                        }
+                    </section>
                 }
-            </tbody>
-        </table>
-    </section>
-    <hr/>
-    @foreach (var sec in sectionResults)
-    {
-        <section id="section-@sec.Id">
-            <h3>@sec.Name</h3>
-            <div id="section-scores">
-                <span class="score-a section-score-a">ScoreA: @(String.Format(fmt, sec.ScoreA)) (@(String.Format(fmt, sec.SectionPercentageScoreA)) %)</span>
-                |
-                <span class="score-b section-score-b">ScoreB: @(String.Format(fmt, sec.ScoreB)) (@(String.Format(fmt, sec.SectionPercentageScoreB)) %)</span>
-            </div>
-            @foreach (var que in sec.QuestionResults)
-            {
-                bool isNewQ = (que.Id == 0 ? true : false);
-                var jqueryId = (isNewQ ? que.QuestionDefinition.DisplayNumber : que.Id.ToString());
-                var thisScoreA = (isNewQ ? "--" : que.ScoreA.ToString());
-                var thisScoreB = (isNewQ ? "--" : (String.Format(fmt, que.effectiveScoreB())));
-                <section class="questionInfo" data-questionid="@que.QuestionDefinitionId">
-                    <h4>@que.QuestionDefinition.DisplayNumber</h4>
-                    <table id="table-@jqueryId" class="table table-condensed table-bordered">
-                        <tr>
-                            <td>
 
-                                <span class="question-text">@que.QuestionDefinition.QuestionText</span>
-                            </td>
-                            <td><span class="question-weight">Weight: @que.QuestionDefinition.Weight</span></td>
-                            <td>
-                                <span class="score-a question-score-a">ScoreA:  @thisScoreA</span> | <span class="score-b question-score-b">ScoreB:  @thisScoreB</span> | <span class="@que.scoreDescription"></span> <br />
-                                <div class=""> @(que.IsNotApplicable ? "Not Applicable" : "") </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Guidelines: <span class="question-quideline">@que.QuestionDefinition.Guideline</span></td>
-                            <td><label>Sample Size:</label><span class="question-samplesize">@que.QuestionDefinition.SampleSize</span></td>
-                            <td>
-                                <label>Complied:</label>
-                                <div class="question-sampleactual">
-                                    @que.SampleActual
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">@que.SampleDescription</td>
-                        </tr>
-                    </table>
-                </section>
-            }
-        </section>
-    }
+            </section>
+        </div>
 
-</section>
+    </div>
+</div>
 <button type="button" onclick="document.location.href='/Audit/EditAudit/@thisAudit.Id'" class="btn btn-success">Edit</button>
 <button type="button" onclick="document.location.href='/Audit'" class="btn btn-danger">Close</button>
 

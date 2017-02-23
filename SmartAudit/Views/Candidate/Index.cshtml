@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewBag.Title = "List of Candidates";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>List of Audits</h2>
+
+<a class="btn btn-primary" href="/Candidate/NewCandidate">Add Candidate</a>
+<table id="candidates" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(document).ready(function(){
+           var audittable= $("#candidates").DataTable({
+                ajax: {
+                    url: "/api/candidates",
+                    dataSrc:""
+                },
+                columns: [
+                    {
+                        data: "id",
+                        render: function (data, type, candidate) {
+                            return "<a href='/audit/showaudit/" + candidate.id + "'>" + data + "</a>"
+                        }
+                    },
+                    {
+                        data: "name"
+                    }, {
+                        data: "id",
+                        render: function (data) {
+                            return "<button class='btn btn-link js-edit' data-candidate-id=" + data + ">Edit</button>"
+                                + "<button class='btn btn-link js-delete' data-candidate-id=" + data + ">Delete</button>"
+                        }
+                    }
+                ]
+            });
+
+           $("#candidates").on("click", ".js-delete", function () {
+                var button = $(this);
+                bootbox.confirm("Are you sure you want to delete this candidate?", function (result) {
+                    if(result){
+                        $.ajax({
+                            url: "/api/candidates/" + button.attr("data-candidate-id"),
+                            method: "DELETE",
+                            success: function () {
+                                audittable.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+                });
+           });
+
+           $("#candidates").on("click", ".js-edit", function () {
+               var button = $(this);
+               document.location.href = "/Candidates/EditCandidate/" + button.attr("data-candidate-id");
+           });
+         });
+    </script>
+
+}

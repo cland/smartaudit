@@ -17,5 +17,6 @@ namespace SmartAudit.Dtos
         public bool IsActive { get; set; }        
         
         public virtual ICollection<SectionDefinitionSimpleDto> Sections { get; set; }
+        public int LinkedAuditsCount { get { return 1; } }
     }
 }
